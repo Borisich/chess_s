@@ -1,0 +1,1 @@
+This is server for Heroku (https://ttt-server.herokuapp.com/)
