@@ -6,7 +6,7 @@ var Room = function(href){
     this.player2 = {player: null, nowTurn: false, playerNumber: 2};
     this.id = "?" + Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, Room.prototype.getIdLength());
     this.inviteLink = href + this.id;
-    this.field = [0,0,0,0,0,0,0,0,0];
+    this.field = Room.prototype.makeInitialField();//[0,0,0,0,0,0,0,0,0];
     this.canDelete = true;
 
 };
@@ -22,7 +22,53 @@ Room.prototype.addPlayer2 = function(socket){
     this.player2.player = socket;
 };
 
+Room.prototype.makeInitialField = function(){
+  var result = [];
+    //середина поля
+    for (var i=0; i<8; i++){
+      result[i] = [];
+      for (var j=2; j<6; j++){
+        result[i][j]="empty";
+      }
+    }
+    //расстановка фигур
+    result[0][0]="rook_b";
+    result[1][0]="knight_b";
+    result[2][0]="bishop_b";
+    result[3][0]="queen_b";
+    result[4][0]="king_b";
+    result[5][0]="bishop_b";
+    result[6][0]="knight_b";
+    result[7][0]="rook_b";
+    result[0][1]="pawn_b";
+    result[1][1]="pawn_b";
+    result[2][1]="pawn_b";
+    result[3][1]="pawn_b";
+    result[4][1]="pawn_b";
+    result[5][1]="pawn_b";
+    result[6][1]="pawn_b";
+    result[7][1]="pawn_b";
 
+    result[0][6]="pawn_w";
+    result[1][6]="pawn_w";
+    result[2][6]="pawn_w";
+    result[3][6]="pawn_w";
+    result[4][6]="pawn_w";
+    result[5][6]="pawn_w";
+    result[6][6]="pawn_w";
+    result[7][6]="pawn_w";
+    result[0][7]="rook_w";
+    result[1][7]="knight_w";
+    result[2][7]="bishop_w";
+    result[3][7]="queen_w";
+    result[4][7]="king_w";
+    result[5][7]="bishop_w";
+    result[6][7]="knight_w";
+    result[7][7]="rook_w";
+
+    console.log(result);
+    return result;
+};
 
 
 /*Room.prototype.saveTurn = function(player,n){
@@ -34,7 +80,7 @@ Room.prototype.addPlayer2 = function(socket){
     }
 };*/
 Room.prototype.winner = function(){
-    if((this.field[0]+this.field[1]+this.field[2]==3) ||
+    /*if((this.field[0]+this.field[1]+this.field[2]==3) ||
         (this.field[3]+this.field[4]+this.field[5]==3) ||
         (this.field[6]+this.field[7]+this.field[8]==3) ||
         (this.field[0]+this.field[3]+this.field[6]==3) ||
@@ -70,7 +116,7 @@ Room.prototype.winner = function(){
     ){
         return "pat";
     }
-    else
+    else*/
         return null;
 };
 
@@ -130,21 +176,21 @@ Room.prototype.game = function(){
 
   //обработка информации о ходе игрока
   function turnProcessing(data){
-    var saveTurn = function(player,n){
+    var saveTurn = function(player,field){
         if (player == self.player1){
-            self.field[n-1] = 1;
+            self.field = field;
         }
         else if (player == self.player2){
-            self.field[n-1] = -1;
+            self.field = field;
         }
     };
     if (data.playerNumber == 1){
-      console.log("Первый походил! Квадрат № " + data.targetId);
-      saveTurn(self.player1,data.targetId);
+      console.log("Первый походил!");
+      saveTurn(self.player1,data.field);
     }
     else if (data.playerNumber == 2){
-      console.log("Второй походил! Квадрат № " + data.targetId);
-      saveTurn(self.player2,data.targetId);
+      console.log("Второй походил!");
+      saveTurn(self.player2,data.field);
     }
     if (!self.winner()) {
       self.player1.nowTurn = !self.player1.nowTurn;
