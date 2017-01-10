@@ -2,11 +2,19 @@
 //Хранит 2-х игроков(http-соединения), идентификатор комнаты, пригласительную ссылку, логику игры
 //Реализует процессы игры и чата
 var Room = function(href){
-    this.player1 = {player: null, nowTurn: true, playerNumber: 1};
-    this.player2 = {player: null, nowTurn: false, playerNumber: 2};
+    this.player1 = {player: null, nowTurn: true, playerNumber: 1, lastOpponentTurn: null};
+    this.player2 = {player: null, nowTurn: false, playerNumber: 2, lastOpponentTurn: null};
     this.id = "?" + Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, Room.prototype.getIdLength());
     this.inviteLink = href + this.id;
     this.field = Room.prototype.makeInitialField();//[0,0,0,0,0,0,0,0,0];
+    this.moved = {
+      rook_w_l: false,
+      rook_w_r: false,
+      king_w: false,
+      rook_b_l: false,
+      rook_b_r: false,
+      king_b: false
+    };
     this.canDelete = true;
 
 };
@@ -67,6 +75,7 @@ Room.prototype.makeInitialField = function(){
     result[7][7]="rook_b";
 
     console.log(result);
+    console.log(result.length);
     return result;
 };
 
@@ -155,14 +164,17 @@ Room.prototype.game = function(){
     self.player1.player ? player2OpponentOffline = false : player2OpponentOffline = true;
     self.player2.player ? player1OpponentOffline = false : player1OpponentOffline = true;
 
+
+    console.log("GameField sended: ");
+    console.log(self.field);
     for (var i = 0; i < arguments.length; i++) {
       if (arguments[i]){
         if (arguments[i] == self.player1.player){
-          arguments[i].emit('game status', {playerNumber: self.player1.playerNumber, nowTurn: self.player1.nowTurn, roomId: self.id, field: self.field});
+          arguments[i].emit('game status', {playerNumber: self.player1.playerNumber, nowTurn: self.player1.nowTurn, roomId: self.id, field: self.field, moved: self.moved, lastOpponentTurn: self.player1.lastOpponentTurn});
           arguments[i].emit('opponent status', {opponentOffline: player1OpponentOffline});
         }
         else if (arguments[i] == self.player2.player){
-          arguments[i].emit('game status', {playerNumber: self.player2.playerNumber, nowTurn: self.player2.nowTurn, roomId: self.id, field: self.field});
+          arguments[i].emit('game status', {playerNumber: self.player2.playerNumber, nowTurn: self.player2.nowTurn, roomId: self.id, field: self.field, moved: self.moved, lastOpponentTurn: self.player2.lastOpponentTurn});
           arguments[i].emit('opponent status', {opponentOffline: player2OpponentOffline});
         }
       }
@@ -176,21 +188,25 @@ Room.prototype.game = function(){
 
   //обработка информации о ходе игрока
   function turnProcessing(data){
-    var saveTurn = function(player,field){
+    var saveTurn = function(player,field,moved,turnContent){
         if (player == self.player1){
             self.field = field;
+            self.moved = moved;
+            self.player2.lastOpponentTurn = turnContent;
         }
         else if (player == self.player2){
             self.field = field;
+            self.moved = moved;
+            self.player1.lastOpponentTurn = turnContent;
         }
     };
     if (data.playerNumber == 1){
       console.log("Первый походил!");
-      saveTurn(self.player1,data.field);
+      saveTurn(self.player1,data.field,data.moved,data.turnContent);
     }
     else if (data.playerNumber == 2){
       console.log("Второй походил!");
-      saveTurn(self.player2,data.field);
+      saveTurn(self.player2,data.field,data.moved,data.turnContent);
     }
     if (!self.winner()) {
       self.player1.nowTurn = !self.player1.nowTurn;
