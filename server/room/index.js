@@ -74,8 +74,6 @@ Room.prototype.makeInitialField = function(){
     result[6][7]="knight_b";
     result[7][7]="rook_b";
 
-    console.log(result);
-    console.log(result.length);
     return result;
 };
 
@@ -165,8 +163,6 @@ Room.prototype.game = function(){
     self.player2.player ? player1OpponentOffline = false : player1OpponentOffline = true;
 
 
-    console.log("GameField sended: ");
-    console.log(self.field);
     for (var i = 0; i < arguments.length; i++) {
       if (arguments[i]){
         if (arguments[i] == self.player1.player){
@@ -199,6 +195,13 @@ Room.prototype.game = function(){
             self.moved = moved;
             self.player1.lastOpponentTurn = turnContent;
         }
+        //save to DB
+        var db = require('../database.js');
+        console.log("SAVING TURN TO DATABASE...");
+        //db.updateRoom(self.id, {field: self.field, moved: JSON.stringify(self.moved)});
+        db.updateRoom(self.id, {field: self.field, moved: "1"});
+        console.log("DONE");
+        console.log(JSON.stringify(self.moved));
     };
     if (data.playerNumber == 1){
       console.log("Первый походил!");

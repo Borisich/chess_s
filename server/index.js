@@ -31,6 +31,25 @@ app.get('/', function(request, response) {
   response.send('Hello man');
 });
 
+//DB_CONNECT
+/*var pg = require('pg');
+
+var connectionString = "postgres://zqxkhxtvbcixhh:31d7a5de47ceb68d3f06d8bb54c66f2294a4f6f0bb2b94bc90376967e6efbb7a@ec2-54-235-204-221.compute-1.amazonaws.com:5432/da593sra73eng5"
+// var connectionString = process.env.DATABASE_URL;
+pg.defaults.ssl = true;
+pg.connect(connectionString, function(err, client) {
+  if (err) throw err;
+  console.log('Connected to postgres! Getting schemas...');
+
+  client
+    .query('SELECT table_schema,table_name FROM information_schema.tables;')
+    .on('row', function(row) {
+      console.log(JSON.stringify(row));
+    });
+});*/
+//-------------------------------------------------------
+var db = require('./database.js');
+//db.addRoom();
 
 server.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
@@ -90,6 +109,7 @@ io.on('connection', function (socket) {
                 console.log("Комната существует! Игра найдена");
                 //Добавляем игрока в комнату, если его ещё нет
                 if (!room.player2.player && !player2Join && !player1Join) {
+                  //Новая игра началась!
                     room.addPlayer2(socket);
                     //запускаем игру и чат
                     room.game();
@@ -120,6 +140,11 @@ io.on('connection', function (socket) {
             console.log("Создание комнаты...");
             room = new Room(data.href);
             console.log("Создана комната "+room.id);
+
+            //создадим в базе
+            console.log("TRYING TO SAVE GAME IN DATABASE...");
+            db.addRoom(room.id);
+            console.log("DONE");
 
             if (!room.player1.player) {
               room.addPlayer1(socket);

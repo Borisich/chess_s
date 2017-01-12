@@ -19,6 +19,7 @@
   "homepage": "https://github.com/Borisich/chess_s#readme",
   "dependencies": {
     "express": "^4.14.0",
+    "pg": "6.1.2",
     "socket.io": "^1.7.1"
   },
   "devDependencies": {}
