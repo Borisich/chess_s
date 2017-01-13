@@ -195,10 +195,23 @@ Room.prototype.game = function(){
             self.moved = moved;
             self.player1.lastOpponentTurn = turnContent;
         }
+        
+        if (!self.winner()) {
+          self.player1.nowTurn = !self.player1.nowTurn;
+          self.player2.nowTurn = !self.player2.nowTurn;
+        }
+        else{
+          self.player1.nowTurn = false;
+          self.player2.nowTurn = false;
+        }
         //save to DB
         var db = require('../database.js');
         console.log("SAVING TURN TO DATABASE...");
-        db.updateRoom(self.id, {field: JSON.stringify(self.field), moved: JSON.stringify(self.moved), player1: JSON.stringify(self.player1), player2: JSON.stringify(self.player2)});
+        var p1 = {player: null, nowTurn: self.player1.nowTurn, playerNumber: self.player1.playerNumber, lastOpponentTurn: self.player1.lastOpponentTurn};
+        var p2 = {player: null, nowTurn: self.player2.nowTurn, playerNumber: self.player2.playerNumber, lastOpponentTurn: self.player2.lastOpponentTurn};
+
+
+        db.updateRoom(self.id, {field: JSON.stringify(self.field), moved: JSON.stringify(self.moved), player1: JSON.stringify(p1), player2: JSON.stringify(p2)});
         //db.updateRoom(self.id, {field: self.field, moved: "1"});
         console.log("DONE");
         //console.log(JSON.stringify(self.moved));
@@ -211,14 +224,7 @@ Room.prototype.game = function(){
       console.log("Второй походил!");
       saveTurn(self.player2,data.field,data.moved,data.turnContent);
     }
-    if (!self.winner()) {
-      self.player1.nowTurn = !self.player1.nowTurn;
-      self.player2.nowTurn = !self.player2.nowTurn;
-    }
-    else{
-      self.player1.nowTurn = false;
-      self.player2.nowTurn = false;
-    }
+
     sendGameStatus(self.player1.player, self.player2.player);
   };
 
