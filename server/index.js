@@ -49,7 +49,7 @@ pg.connect(connectionString, function(err, client) {
 });*/
 //-------------------------------------------------------
 var db = require('./database.js');
-//db.addRoom();
+var wait = require('wait.for');
 
 server.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
@@ -76,7 +76,33 @@ rooms.searchById = function(id){
             return { room: rooms[i], roomNumber: i};
         }
     }
-    return false;
+    //не нашли в памяти. Ищем в БД
+    console.log("Room not founded in vars...");
+    /*var dbSearchRoom = db.searchRoom(id);
+    console.log("Result of searching function in searchById");
+    console.log(dbSearchRoom);
+    if (dbSearchRoom){
+      console.log("OMG!!! We can restore room from DATABASE!!!");
+    } else {
+      console.log("FAIL!!!");
+      return false;
+    };*/
+    var res = null;
+    function  testFunction(){
+        console.log('fiber start');
+        var res = wait.for(db.searchRoom,id);
+        console.log('function returned:', res);
+        console.log('fiber end');
+    };
+    res = wait.launchFiber(testFunction);
+    //var res = wait.for(db.searchRoom,id);
+    //var res = db.searchRoom(id);
+    if (res){
+      console.log("OMG!!! We can restore room from DATABASE!!!");
+    } else {
+      console.log("FAIL!!!");
+      return false;
+    };
 };
 
 io.on('connection', function (socket) {

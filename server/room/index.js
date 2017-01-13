@@ -198,10 +198,10 @@ Room.prototype.game = function(){
         //save to DB
         var db = require('../database.js');
         console.log("SAVING TURN TO DATABASE...");
-        //db.updateRoom(self.id, {field: self.field, moved: JSON.stringify(self.moved)});
-        db.updateRoom(self.id, {field: self.field, moved: "1"});
+        db.updateRoom(self.id, {field: JSON.stringify(self.field), moved: JSON.stringify(self.moved), player1: JSON.stringify(self.player1), player2: JSON.stringify(self.player2)});
+        //db.updateRoom(self.id, {field: self.field, moved: "1"});
         console.log("DONE");
-        console.log(JSON.stringify(self.moved));
+        //console.log(JSON.stringify(self.moved));
     };
     if (data.playerNumber == 1){
       console.log("Первый походил!");
