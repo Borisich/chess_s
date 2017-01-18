@@ -63,9 +63,11 @@ var rooms = [];
 //с методами поиска по разным критериям
 rooms.searchByPlayer = function(player){
     for (var i = 0; i< rooms.length; i++){
+      if (rooms[i].player1 && rooms[i].player2)
         if ((rooms[i].player1.player == player)||(rooms[i].player2.player == player)){
             return { room: rooms[i], roomNumber: i};
         }
+
     }
     return false;
 };
@@ -82,37 +84,36 @@ function gameSearch(receivedRoomId, player1Join, player2Join, socket){
   function gameStart(roomId){
     console.log("gameStart function running...");
     var room = rooms.searchById(roomId).room;
-    console.log("rooms[0].id: " + rooms[0].id);
-
-    console.log("Комната существует! Игра найдена");
-    //Добавляем игрока в комнату, если его ещё нет
-    if (!room.player2.player && !player2Join && !player1Join) {
-      //Новая игра началась!
-        room.addPlayer2(socket);
-        //запускаем игру и чат
-        room.game();
-        room.chat();
-    }
-    else if (!room.player2.player && player2Join){
-      room.addPlayer2(socket);
-      room.game();
-      room.chat();
-      player2Join = false;
-    }
-    else if (!room.player1.player && player1Join){
-      room.addPlayer1(socket);
-      room.game();
-      room.chat();
-      player1Join = false;
+    if (room){
+      console.log(room.id);
+      //Добавляем игрока в комнату, если его ещё нет
+      if (player2Join){
+        if (!room.player2.player) {
+          room.addPlayer2(socket);
+          room.game();
+          room.chat();
+        }
+        else socket.emit("room is full");
+      }
+      else if (player1Join){
+        if (!room.player1.player) {
+          room.addPlayer1(socket);
+          room.game();
+          room.chat();
+        }
+        else socket.emit("room is full");
+      }
     }
     else
     {
-        socket.emit("room is full");
+        socket.emit("game not found");
+        console.log("game not found from server");
     }
   }
+
   var room = rooms.searchById(receivedRoomId).room;
   if (!room){
-    db.searchRoom(receivedRoomId, rooms, socket, gameStart)
+    db.searchRoom(receivedRoomId, rooms, gameStart)
   } else {
     gameStart(receivedRoomId);
   }
@@ -134,6 +135,8 @@ io.on('connection', function (socket) {
         //Проверка параметров.
         //Если есть параметры, попытаться найти комнату с таким id
         //Если их нет, то создать комнату, отправить пригласительную ссылку на подключение к игре другого клиента
+        var player1Join = false;
+        var player2Join = false;
         if (data.params){
             console.log("Получены параметры от клиента: " + data.params);
             //Если длина на 1 больше чем надо - возможно кто-то хочет восстановить игру
@@ -142,13 +145,14 @@ io.on('connection', function (socket) {
               console.log("ID комнаты: " + data.params.substr(0,5))
               //анализируем последний символ: должен быть 1 или 2
               if (data.params.substr(5,5) == "1"){
-                var player1Join = true;
+                player1Join = true;
                 data.params = data.params.substr(0,5);
               }
               if (data.params.substr(5,5) == "2"){
-                var player2Join = true;
+                 player2Join = true;
                 data.params = data.params.substr(0,5);
               }
+
             }
             //Если есть комната с таким id, то начать игру
             gameSearch(data.params, player1Join, player2Join, socket);
@@ -192,7 +196,7 @@ io.on('connection', function (socket) {
 
             //создадим в базе
             console.log("TRYING TO SAVE GAME IN DATABASE...");
-            db.addRoom(room.id);
+            db.addRoom(room.id, {field: JSON.stringify(room.field), moved: JSON.stringify(room.moved), player1: JSON.stringify(room.player1), player2: JSON.stringify(room.player2)});
             console.log("DONE");
 
             if (!room.player1.player) {

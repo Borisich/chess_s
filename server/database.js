@@ -2,14 +2,14 @@ var pg = require('pg');
 var Room = require('./room');
 var database = {
   pg: require('pg'),
-  addRoom: function(room_id){
+  addRoom: function(room_id, roomData){
     var connectionString = "postgres://zqxkhxtvbcixhh:31d7a5de47ceb68d3f06d8bb54c66f2294a4f6f0bb2b94bc90376967e6efbb7a@ec2-54-235-204-221.compute-1.amazonaws.com:5432/da593sra73eng5"
     // var connectionString = process.env.DATABASE_URL;
     pg.defaults.ssl = true;
     pg.connect(connectionString, function(err, client) {
       if (err) throw err;
       console.log('Connected to adding row!!!');
-      var query = "INSERT INTO rooms (room_id) VALUES ('" + room_id + "');"
+      var query = "INSERT INTO rooms (room_id, field, moved, player1, player2) VALUES ('" + room_id + "', '" + roomData.field + "', '" + roomData.moved + "', '" + roomData.player1 + "', '" + roomData.player2 +"');"
       client.query(query);
 
       /*client
@@ -38,7 +38,7 @@ var database = {
     });
   },
 
-  searchRoom: function(room_id, rooms, socket, callback){
+  searchRoom: function(room_id, rooms, callback){
     var connectionString = "postgres://zqxkhxtvbcixhh:31d7a5de47ceb68d3f06d8bb54c66f2294a4f6f0bb2b94bc90376967e6efbb7a@ec2-54-235-204-221.compute-1.amazonaws.com:5432/da593sra73eng5"
     // var connectionString = process.env.DATABASE_URL;
     var result = null;
@@ -76,7 +76,7 @@ var database = {
       });
       qr.on('end', function() {
         if (!found){
-          socket.emit("game not found");
+          callback(room_id);
         }
         //return result;
       });

@@ -23,11 +23,13 @@ Room.prototype.getIdLength = function(){
 }
 //Добавление в комнату игрока 1
 Room.prototype.addPlayer1 = function(socket){
-    this.player1.player = socket;
+  !this.player1 ? this.player1 = {} : {}; 
+  this.player1.player = socket;
 };
 //Добавление в комнату игрока 2
 Room.prototype.addPlayer2 = function(socket){
-    this.player2.player = socket;
+  !this.player2 ? this.player2 = {} : {};
+  this.player2.player = socket;
 };
 
 Room.prototype.makeInitialField = function(){
@@ -195,7 +197,7 @@ Room.prototype.game = function(){
             self.moved = moved;
             self.player1.lastOpponentTurn = turnContent;
         }
-        
+
         if (!self.winner()) {
           self.player1.nowTurn = !self.player1.nowTurn;
           self.player2.nowTurn = !self.player2.nowTurn;
