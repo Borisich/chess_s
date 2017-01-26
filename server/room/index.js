@@ -23,7 +23,7 @@ Room.prototype.getIdLength = function(){
 }
 //Добавление в комнату игрока 1
 Room.prototype.addPlayer1 = function(socket){
-  !this.player1 ? this.player1 = {} : {}; 
+  !this.player1 ? this.player1 = {} : {};
   this.player1.player = socket;
 };
 //Добавление в комнату игрока 2
@@ -80,53 +80,18 @@ Room.prototype.makeInitialField = function(){
 };
 
 
-/*Room.prototype.saveTurn = function(player,n){
-    if (player == this.player1){
-        this.field[n-1] = 1;
-    }
-    else if (player == this.player2){
-        this.field[n-1] = -1;
-    }
-};*/
 Room.prototype.winner = function(){
-    /*if((this.field[0]+this.field[1]+this.field[2]==3) ||
-        (this.field[3]+this.field[4]+this.field[5]==3) ||
-        (this.field[6]+this.field[7]+this.field[8]==3) ||
-        (this.field[0]+this.field[3]+this.field[6]==3) ||
-        (this.field[1]+this.field[4]+this.field[7]==3) ||
-        (this.field[2]+this.field[5]+this.field[8]==3) ||
-        (this.field[4]+this.field[6]+this.field[2]==3) ||
-        (this.field[0]+this.field[4]+this.field[8]==3)
-    ) {
-        return this.player1;
-    }
-    else if (
-        (this.field[0]+this.field[1]+this.field[2]==-3) ||
-        (this.field[3]+this.field[4]+this.field[5]==-3) ||
-        (this.field[6]+this.field[7]+this.field[8]==-3) ||
-        (this.field[0]+this.field[3]+this.field[6]==-3) ||
-        (this.field[1]+this.field[4]+this.field[7]==-3) ||
-        (this.field[2]+this.field[5]+this.field[8]==-3) ||
-        (this.field[4]+this.field[6]+this.field[2]==-3) ||
-        (this.field[0]+this.field[4]+this.field[8]==-3)
-    ){
-        return this.player2;
-    }
-    else if (
-        (this.field[0] != 0) &&
-        (this.field[1] != 0) &&
-        (this.field[2] != 0) &&
-        (this.field[3] != 0) &&
-        (this.field[4] != 0) &&
-        (this.field[5] != 0) &&
-        (this.field[6] != 0) &&
-        (this.field[7] != 0) &&
-        (this.field[8] != 0)
-    ){
-        return "pat";
-    }
-    else*/
-        return null;
+  /*
+
+  Определяем мат
+
+  return this.player1;
+
+  return this.player2;
+
+  return "pat";
+  */
+  return null;
 };
 
 Room.prototype.chat = function(){
@@ -146,7 +111,6 @@ Room.prototype.chat = function(){
       });
     }
 };
-
 
 
 Room.prototype.game = function(){
@@ -183,7 +147,6 @@ Room.prototype.game = function(){
   }
 
 
-
   //обработка информации о ходе игрока
   function turnProcessing(data){
     var saveTurn = function(player,field,moved,turnContent){
@@ -214,9 +177,7 @@ Room.prototype.game = function(){
 
 
         db.updateRoom(self.id, {field: JSON.stringify(self.field), moved: JSON.stringify(self.moved), player1: JSON.stringify(p1), player2: JSON.stringify(p2)});
-        //db.updateRoom(self.id, {field: self.field, moved: "1"});
-        console.log("DONE");
-        //console.log(JSON.stringify(self.moved));
+        console.log("Room update DONE");
     };
     if (data.playerNumber == 1){
       console.log("Первый походил!");
@@ -261,8 +222,8 @@ Room.prototype.setNewGame = function(number){
       self.player1.nowTurn = true;
       self.player2.nowTurn = false;
   }
-  this.field = [0,0,0,0,0,0,0,0,0];
-  this.canDelete = true;
+  self.field = Room.prototype.makeInitialField();;
+  self.canDelete = true;
 };
 
 Room.prototype.restartGameListener = function(){
@@ -299,55 +260,6 @@ Room.prototype.restartGameListener = function(){
       self.player1.player.emit('restart canceled');
     });
   }
-
-
-
-  /*if (self.player1.player){
-    var requestsCount1 = 0;
-    self.player1.player.on('restart request', function(){
-      console.log("restart request from player1 getted")
-      requestsCount1++;
-      self.player2.player.emit('restart request');
-      if (requestsCount1 == 1){
-        //self.player2.player.removeAllListeners('restart request');
-        self.player2.player.once('restart accepted', function(){
-          self.player1.player.emit('restart accepted');
-          self.setNewGame(1);
-          self.game();
-
-        });
-        console.log("restart CANCELED FROM PLAYER2 LISTENING");
-        self.player2.player.on('restart canceled', function(){
-          console.log("restart CANCELED FROM PLAYER2 RECEIVED");
-          self.player1.player.emit('restart canceled');
-        });
-      }
-    })
-  }
-  if (self.player2.player){
-    var requestsCount2 = 0;
-    self.player2.player.on('restart request', function(){
-      console.log("restart request from player2 getted");
-      requestsCount2++;
-      self.player1.player.emit('restart request');
-      if (requestsCount2 == 1){
-        //self.player1.player.removeAllListeners('restart request');
-        self.player1.player.once('restart accepted', function(){
-          self.player2.player.emit('restart accepted');
-          self.setNewGame(2);
-          self.game();
-
-        });
-        console.log("restart CANCELED FROM PLAYER1 LISTENING");
-        self.player1.player.on('restart canceled', function(){
-          console.log("restart CANCELED FROM PLAYER1 RECEIVED");
-          self.player2.player.emit('restart canceled');
-        });
-      }
-    })
-  }*/
-
-
 };
 Room.prototype.endGame = function(reason){
     console.log("Игра закончилась!");

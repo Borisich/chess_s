@@ -31,23 +31,6 @@ app.get('/', function(request, response) {
   response.send('Hello man');
 });
 
-//DB_CONNECT
-/*var pg = require('pg');
-
-var connectionString = "postgres://zqxkhxtvbcixhh:31d7a5de47ceb68d3f06d8bb54c66f2294a4f6f0bb2b94bc90376967e6efbb7a@ec2-54-235-204-221.compute-1.amazonaws.com:5432/da593sra73eng5"
-// var connectionString = process.env.DATABASE_URL;
-pg.defaults.ssl = true;
-pg.connect(connectionString, function(err, client) {
-  if (err) throw err;
-  console.log('Connected to postgres! Getting schemas...');
-
-  client
-    .query('SELECT table_schema,table_name FROM information_schema.tables;')
-    .on('row', function(row) {
-      console.log(JSON.stringify(row));
-    });
-});*/
-//-------------------------------------------------------
 var db = require('./database.js');
 
 server.listen(app.get('port'), function() {
@@ -67,10 +50,10 @@ rooms.searchByPlayer = function(player){
         if ((rooms[i].player1.player == player)||(rooms[i].player2.player == player)){
             return { room: rooms[i], roomNumber: i};
         }
-
     }
     return false;
 };
+
 rooms.searchById = function(id){
     for (var i = 0; i< rooms.length; i++){
         if (rooms[i].id== id){
@@ -80,6 +63,7 @@ rooms.searchById = function(id){
     return false;
 };
 
+//Поиск комнаты и старт игры, если комната найдена
 function gameSearch(receivedRoomId, player1Join, player2Join, socket){
   function gameStart(roomId){
     console.log("gameStart function running...");
@@ -103,6 +87,9 @@ function gameSearch(receivedRoomId, player1Join, player2Join, socket){
         }
         else socket.emit("room is full");
       }
+      else {
+        socket.emit("game not found");
+      }
     }
     else
     {
@@ -117,15 +104,6 @@ function gameSearch(receivedRoomId, player1Join, player2Join, socket){
   } else {
     gameStart(receivedRoomId);
   }
-
-
-  /*if (room)
-  {
-
-  }
-  else {
-      socket.emit("game not found");
-  }*/
 }
 
 io.on('connection', function (socket) {
@@ -156,38 +134,6 @@ io.on('connection', function (socket) {
             }
             //Если есть комната с таким id, то начать игру
             gameSearch(data.params, player1Join, player2Join, socket);
-            /*var room = rooms.searchById(data.params).room;
-            if (room)
-            {
-                console.log("Комната существует! Игра найдена");
-                //Добавляем игрока в комнату, если его ещё нет
-                if (!room.player2.player && !player2Join && !player1Join) {
-                  //Новая игра началась!
-                    room.addPlayer2(socket);
-                    //запускаем игру и чат
-                    room.game();
-                    room.chat();
-                }
-                else if (!room.player2.player && player2Join){
-                  room.addPlayer2(socket);
-                  room.game();
-                  room.chat();
-                  player2Join = false;
-                }
-                else if (!room.player1.player && player1Join){
-                  room.addPlayer1(socket);
-                  room.game();
-                  room.chat();
-                  player1Join = false;
-                }
-                else
-                {
-                    socket.emit("room is full");
-                }
-            }
-            else {
-                socket.emit("game not found");
-            }*/
         }
         else{
             console.log("Создание комнаты...");
@@ -211,41 +157,28 @@ io.on('connection', function (socket) {
             });
         }
     });
-    //при отключении игрока игра завершается
+
+    //при отключении игрока
     socket.on('disconnect', function () {
-
-        var roomForDelete = rooms.searchByPlayer(socket);
-        if (roomForDelete) {
-          if (roomForDelete.room.player1.player == socket){
-            roomForDelete.room.player1.player = null;
+        var roomDisconnected = rooms.searchByPlayer(socket);
+        if (roomDisconnected) {
+          if (roomDisconnected.room.player1.player == socket){
+            roomDisconnected.room.player1.player = null;
             console.log("Отключился игрок 1");
-            //roomForDelete.room.player2.player ? roomForDelete.room.sendGameStatus(roomForDelete.room.player2.player) : {};
-
-            if (roomForDelete.room.player2.player) roomForDelete.room.player2.player.emit('opponent status', {opponentOffline: true});
+            if (roomDisconnected.room.player2.player) roomDisconnected.room.player2.player.emit('opponent status', {opponentOffline: true});
           }
           else{
-            roomForDelete.room.player2.player = null;
+            roomDisconnected.room.player2.player = null;
             console.log("Отключился игрок 2");
-            //roomForDelete.room.player1.player ? roomForDelete.room.sendGameStatus(roomForDelete.room.player1.player) : {};
-            if (roomForDelete.room.player1.player) roomForDelete.room.player1.player.emit('opponent status', {opponentOffline: true});
+            if (roomDisconnected.room.player1.player) roomDisconnected.room.player1.player.emit('opponent status', {opponentOffline: true});
           }
           //удаляем комнату, если её разрешено удалять
-          if (roomForDelete.room.canDelete){
-            rooms.splice(roomForDelete.roomNumber, 1);
-            console.log("Игрок отключился, удалена комната " + roomForDelete.room.id);
+          if (roomDisconnected.room.canDelete){
+            rooms.splice(roomDisconnected.roomNumber, 1);
+            console.log("Игрок отключился, удалена комната " + roomDisconnected.room.id);
             console.log("Количество активных комнат: "+rooms.length);
           }
         }
-
-        /*if (roomForDelete) {
-            rooms.splice(roomForDelete.roomNumber, 1);
-            console.log("Игрок отключился, удалена комната " + roomForDelete.room.id);
-            roomForDelete.room.endGame("disconnect");
-        }
-        else{
-            console.log("Игрок отключился, его комнаты уже не существует");
-        }*/
-
         console.log("Количество активных комнат: "+rooms.length);
     });
 });
