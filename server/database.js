@@ -7,17 +7,26 @@ var database = {
     pg.connect(this.connectionString, function(err, client) {
       if (err) throw err;
       console.log('Connected to adding row!!!');
-      var query = "INSERT INTO rooms (room_id, field, moved, player1, player2) VALUES ('" + room_id + "', '" + roomData.field + "', '" + roomData.moved + "', '" + roomData.player1 + "', '" + roomData.player2 +"');"
+      var query = "INSERT INTO rooms (room_id, field, moved, player1, player2, lost_figures) VALUES ('" + room_id + "', '" + roomData.field + "', '" + roomData.moved + "', '" + roomData.player1 + "', '" + roomData.player2 +"', '" + roomData.lostFigures +"');"
       client.query(query);
     });
   },
 
   updateRoom: function(room_id, roomData){
-    pg.connect(this.connectionString, function(err, client) {
-      if (err) throw err;
+    console.log('We want to update room...!');
+    pg.connect(this.connectionString, function(err, client, done) {
+      console.log('connect function called...');
+      if (err) {
+        console.log('Shit happened!');
+        throw err;
+      }
       console.log('Connected to updating row!!!');
-      var query = "UPDATE rooms SET (field, moved, player1, player2) = ('" + roomData.field + "', '" + roomData.moved + "', '" + roomData.player1 + "', '" + roomData.player2 + "') WHERE room_id = '" + room_id + "';";
-      client.query(query);
+      var query = "UPDATE rooms SET (field, moved, player1, player2, lost_figures) = ('" + roomData.field + "', '" + roomData.moved + "', '" + roomData.player1 + "', '" + roomData.player2 + "', '" + roomData.lostFigures +"') WHERE room_id = '" + room_id + "';";
+      //client.query(query);
+      client.query(query, function(err,res){
+        done();
+        console.log('DONE called');
+      });
       console.log('updated.');
     });
   },
@@ -45,6 +54,7 @@ var database = {
           restoredRoom.inviteLink = null;
           restoredRoom.field = JSON.parse(row.field);
           restoredRoom.moved = JSON.parse(row.moved);
+          restoredRoom.lostFigures = JSON.parse(row.lost_figures);
           restoredRoom.canDelete = null;
           rooms.push(restoredRoom);
           callback(row.room_id);

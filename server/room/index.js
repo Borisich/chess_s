@@ -16,6 +16,11 @@ var Room = function(href){
       king_b: false
     };
     this.canDelete = true;
+    this.lostFigures = {
+      figures: [],
+      lastMarkedWhite: false,
+      lastMarkedBlack: false
+    };
 
 };
 Room.prototype.getIdLength = function(){
@@ -132,11 +137,11 @@ Room.prototype.game = function(){
     for (var i = 0; i < arguments.length; i++) {
       if (arguments[i]){
         if (arguments[i] == self.player1.player){
-          arguments[i].emit('game status', {playerNumber: self.player1.playerNumber, nowTurn: self.player1.nowTurn, roomId: self.id, field: self.field, moved: self.moved, lastOpponentTurn: self.player1.lastOpponentTurn});
+          arguments[i].emit('game status', {playerNumber: self.player1.playerNumber, nowTurn: self.player1.nowTurn, roomId: self.id, field: self.field, moved: self.moved, lastOpponentTurn: self.player1.lastOpponentTurn, lostFigures: self.lostFigures});
           arguments[i].emit('opponent status', {opponentOffline: player1OpponentOffline});
         }
         else if (arguments[i] == self.player2.player){
-          arguments[i].emit('game status', {playerNumber: self.player2.playerNumber, nowTurn: self.player2.nowTurn, roomId: self.id, field: self.field, moved: self.moved, lastOpponentTurn: self.player2.lastOpponentTurn});
+          arguments[i].emit('game status', {playerNumber: self.player2.playerNumber, nowTurn: self.player2.nowTurn, roomId: self.id, field: self.field, moved: self.moved, lastOpponentTurn: self.player2.lastOpponentTurn, lostFigures: self.lostFigures});
           arguments[i].emit('opponent status', {opponentOffline: player2OpponentOffline});
         }
       }
@@ -149,7 +154,7 @@ Room.prototype.game = function(){
 
   //обработка информации о ходе игрока
   function turnProcessing(data){
-    var saveTurn = function(player,field,moved,turnContent){
+    var saveTurn = function(player,field,moved,turnContent,lostFigure){
         if (player == self.player1){
             self.field = field;
             self.moved = moved;
@@ -160,7 +165,18 @@ Room.prototype.game = function(){
             self.moved = moved;
             self.player1.lastOpponentTurn = turnContent;
         }
-
+        self.lostFigures.lastMarkedWhite = false;
+        self.lostFigures.lastMarkedBlack = false;
+        if (lostFigure) {
+          //определяем кого съели - белого или черного
+          if (lostFigure[lostFigure.length-1] == "w"){
+            self.lostFigures.lastMarkedWhite = true;
+          }
+          if (lostFigure[lostFigure.length-1] == "b"){
+            self.lostFigures.lastMarkedBlack = true;
+          }
+          self.lostFigures.figures.push(lostFigure);
+        }
         if (!self.winner()) {
           self.player1.nowTurn = !self.player1.nowTurn;
           self.player2.nowTurn = !self.player2.nowTurn;
@@ -176,16 +192,16 @@ Room.prototype.game = function(){
         var p2 = {player: null, nowTurn: self.player2.nowTurn, playerNumber: self.player2.playerNumber, lastOpponentTurn: self.player2.lastOpponentTurn};
 
 
-        db.updateRoom(self.id, {field: JSON.stringify(self.field), moved: JSON.stringify(self.moved), player1: JSON.stringify(p1), player2: JSON.stringify(p2)});
+        db.updateRoom(self.id, {field: JSON.stringify(self.field), moved: JSON.stringify(self.moved), player1: JSON.stringify(p1), player2: JSON.stringify(p2), lostFigures: JSON.stringify(self.lostFigures)});
         console.log("Room update DONE");
     };
     if (data.playerNumber == 1){
       console.log("Первый походил!");
-      saveTurn(self.player1,data.field,data.moved,data.turnContent);
+      saveTurn(self.player1,data.field,data.moved,data.turnContent,data.lostFigure);
     }
     else if (data.playerNumber == 2){
       console.log("Второй походил!");
-      saveTurn(self.player2,data.field,data.moved,data.turnContent);
+      saveTurn(self.player2,data.field,data.moved,data.turnContent,data.lostFigure);
     }
 
     sendGameStatus(self.player1.player, self.player2.player);
@@ -224,6 +240,7 @@ Room.prototype.setNewGame = function(number){
   }
   self.field = Room.prototype.makeInitialField();;
   self.canDelete = true;
+  self.lostFigures = [];
 };
 
 Room.prototype.restartGameListener = function(){

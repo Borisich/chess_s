@@ -142,7 +142,7 @@ io.on('connection', function (socket) {
 
             //создадим в базе
             console.log("TRYING TO SAVE GAME IN DATABASE...");
-            db.addRoom(room.id, {field: JSON.stringify(room.field), moved: JSON.stringify(room.moved), player1: JSON.stringify(room.player1), player2: JSON.stringify(room.player2)});
+            db.addRoom(room.id, {field: JSON.stringify(room.field), moved: JSON.stringify(room.moved), player1: JSON.stringify(room.player1), player2: JSON.stringify(room.player2), lostFigures: JSON.stringify(room.lostFigures)});
             console.log("DONE");
 
             if (!room.player1.player) {
