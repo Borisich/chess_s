@@ -154,6 +154,184 @@ Room.prototype.game = function(){
 
   //обработка информации о ходе игрока
   function turnProcessing(data){
+    var isCheck = function(player){
+      //для игрока 1
+      //находим координаты белого короля
+      var king_wCoords = {};
+      for (var i=0; i<self.field.length; i++){
+        for (var j=0; j<self.field[i].length; j++){
+          if (self.field[i][j] == "king_w"){
+            king_wCoords = {
+              i: i,
+              j: j
+            }
+            break;
+          }
+        }
+      }
+      var hypoteticPawnCoords = null;
+      //атакует ли черная пешка?
+      hypoteticPawnCoords = {
+        i: king_wCoords.i-1,
+        j: king_wCoords.j+1
+      };
+      if ((hypoteticPawnCoords.i >= 0) && (hypoteticPawnCoords.j <= 7)){
+        if (self.field[hypoteticPawnCoords.i][hypoteticPawnCoords.j] == "pawn_b") return true
+      }
+
+      hypoteticPawnCoords = {
+        i: king_wCoords.i+1,
+        j: king_wCoords.j+1
+      };
+      if ((hypoteticPawnCoords.i <= 7) && (hypoteticPawnCoords.j <= 7)){
+        if (self.field[hypoteticPawnCoords.i][hypoteticPawnCoords.j] == "pawn_b") return true
+      }
+
+      //атакует ли черная ладья или ферзь?
+      for (var i = king_wCoords.i; i >= 0; i--){
+        if ((self.field[i][king_wCoords.j] != "king_w") && (self.field[i][king_wCoords.j] != "empty") && (self.field[i][king_wCoords.j] != "rook_b") && (self.field[i][king_wCoords.j] != "queen_b")){
+          //если другая фигура
+          break;
+        }
+        if ((self.field[i][king_wCoords.j] == "rook_b") || (self.field[i][king_wCoords.j] == "queen_b")) return true;
+      }
+      for (var i = king_wCoords.i; i <= 7; i++){
+        if ((self.field[i][king_wCoords.j] != "king_w") && (self.field[i][king_wCoords.j] != "empty") && (self.field[i][king_wCoords.j] != "rook_b") && (self.field[i][king_wCoords.j] != "queen_b")){
+          //если другая фигура
+          break;
+        }
+        if ((self.field[i][king_wCoords.j] == "rook_b") || (self.field[i][king_wCoords.j] == "queen_b")) return true;
+      }
+      for (var j = king_wCoords.j; j >= 0; j--){
+        if ((self.field[king_wCoords.i][j] != "king_w") && (self.field[king_wCoords.i][j] != "empty") && (self.field[king_wCoords.i][j] != "rook_b") && (self.field[king_wCoords.i][j] != "queen_b")){
+          //если другая фигура
+          break;
+        }
+        if ((self.field[king_wCoords.i][j] == "rook_b") || (self.field[king_wCoords.i][j] == "queen_b")) return true;
+      }
+      for (var j = king_wCoords.j; j <= 7; j++){
+        if ((self.field[king_wCoords.i][j] != "king_w") && (self.field[king_wCoords.i][j] != "empty") && (self.field[king_wCoords.i][j] != "rook_b") && (self.field[king_wCoords.i][j] != "queen_b")){
+          //если другая фигура
+          break;
+        }
+        if ((self.field[king_wCoords.i][j] == "rook_b") || (self.field[king_wCoords.i][j] == "queen_b")) return true;
+      }
+
+      //атакует ли черный слон или ферзь?
+      for (var i = king_wCoords.i, j = king_wCoords.j; ((i >= 0) && (j <= 7)); i--, j++){
+        if ((self.field[i][j] != "king_w") && (self.field[i][j] != "empty") && (self.field[i][j] != "bishop_b") && (self.field[i][j] != "queen_b")){
+          //если другая фигура
+          break;
+        }
+        if ((self.field[i][j] == "bishop_b") || (self.field[i][j] == "queen_b")) return true;
+      }
+      for (var i = king_wCoords.i, j = king_wCoords.j; ((i <= 7) && (j <= 7)); i++, j++){
+        if ((self.field[i][j] != "king_w") && (self.field[i][j] != "empty") && (self.field[i][j] != "bishop_b") && (self.field[i][j] != "queen_b")){
+          //если другая фигура
+          break;
+        }
+        if ((self.field[i][j] == "bishop_b") || (self.field[i][j] == "queen_b")) return true;
+      }
+      for (var i = king_wCoords.i, j = king_wCoords.j; ((i <= 7) && (j >= 0)); i++, j--){
+        if ((self.field[i][j] != "king_w") && (self.field[i][j] != "empty") && (self.field[i][j] != "bishop_b") && (self.field[i][j] != "queen_b")){
+          //если другая фигура
+          break;
+        }
+        if ((self.field[i][j] == "bishop_b") || (self.field[i][j] == "queen_b")) return true;
+      }
+      for (var i = king_wCoords.i, j = king_wCoords.j; ((i >= 0) && (j >= 0)); i--, j--){
+        if ((self.field[i][j] != "king_w") && (self.field[i][j] != "empty") && (self.field[i][j] != "bishop_b") && (self.field[i][j] != "queen_b")){
+          //если другая фигура
+          break;
+        }
+        if ((self.field[i][j] == "bishop_b") || (self.field[i][j] == "queen_b")) return true;
+      }
+
+      //атакует ли черный конь?
+      var hypoteticKnightCoords = [
+      {
+        i: king_wCoords.i+1,
+        j: king_wCoords.j+2
+      },
+      {
+        i: king_wCoords.i+2,
+        j: king_wCoords.j+1
+      },
+      {
+        i: king_wCoords.i+2,
+        j: king_wCoords.j-1
+      },
+      {
+        i: king_wCoords.i+1,
+        j: king_wCoords.j-2
+      },
+      {
+        i: king_wCoords.i-1,
+        j: king_wCoords.j-2
+      },
+      {
+        i: king_wCoords.i-2,
+        j: king_wCoords.j-1
+      },
+      {
+        i: king_wCoords.i-2,
+        j: king_wCoords.j+1
+      },
+      {
+        i: king_wCoords.i-1,
+        j: king_wCoords.j+2
+      }]
+      for (var i=0; i<hypoteticKnightCoords.length; i++){
+        if ((hypoteticKnightCoords[i].i <= 7) && (hypoteticKnightCoords[i].i >= 0) && (hypoteticKnightCoords[i].j <= 7) && (hypoteticKnightCoords[i].j >= 0)) {
+          if (self.field[hypoteticKnightCoords[i].i][hypoteticKnightCoords[i].j] == "knight_b") return true
+        }
+      }
+
+      //атакует ли черный король?
+      var hypoteticKingCoords = [
+      {
+        i: king_wCoords.i-1,
+        j: king_wCoords.j+1
+      },
+      {
+        i: king_wCoords.i+0,
+        j: king_wCoords.j+1
+      },
+      {
+        i: king_wCoords.i+1,
+        j: king_wCoords.j+1
+      },
+      {
+        i: king_wCoords.i+1,
+        j: king_wCoords.j+0
+      },
+      {
+        i: king_wCoords.i+1,
+        j: king_wCoords.j-1
+      },
+      {
+        i: king_wCoords.i-0,
+        j: king_wCoords.j-1
+      },
+      {
+        i: king_wCoords.i-1,
+        j: king_wCoords.j-1
+      },
+      {
+        i: king_wCoords.i-1,
+        j: king_wCoords.j+0
+      }]
+      for (var i=0; i<hypoteticKingCoords.length; i++){
+        if ((hypoteticKingCoords[i].i <= 7) && (hypoteticKingCoords[i].i >= 0) && (hypoteticKingCoords[i].j <= 7) && (hypoteticKingCoords[i].j >= 0)) {
+          if (self.field[hypoteticKingCoords[i].i][hypoteticKingCoords[i].j] == "king_b") return true
+        }
+      }
+
+
+
+      return false;
+
+    }
     var saveTurn = function(player,field,moved,turnContent,lostFigure){
         if (player == self.player1){
             self.field = field;
@@ -203,7 +381,9 @@ Room.prototype.game = function(){
       console.log("Второй походил!");
       saveTurn(self.player2,data.field,data.moved,data.turnContent,data.lostFigure);
     }
-
+    if (isCheck()){
+      console.log("ШАХ БЕЛОМУ ЁПТ")
+    };
     sendGameStatus(self.player1.player, self.player2.player);
   };
 
