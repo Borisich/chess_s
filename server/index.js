@@ -145,9 +145,9 @@ io.on('connection', function (socket) {
             db.addRoom(room.id, {field: JSON.stringify(room.field), moved: JSON.stringify(room.moved), player1: JSON.stringify(room.player1), player2: JSON.stringify(room.player2), lostFigures: JSON.stringify(room.lostFigures)});
             console.log("DONE");
 
-            /*if (!room.player1.player) {
+            if (!room.player1.player) {
               room.addPlayer1(socket);
-            }*/
+            }
 
             rooms.push(room);
             console.log("Количество активных комнат: "+rooms.length);
