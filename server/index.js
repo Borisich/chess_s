@@ -133,6 +133,7 @@ io.on('connection', function (socket) {
 
             }
             //Если есть комната с таким id, то начать игру
+            console.log("Вызывается функция gameSearch (" + data.params + ", "+ player1Join+ ", "+ player2Join+ ", socket" );
             gameSearch(data.params, player1Join, player2Join, socket);
         }
         else{
