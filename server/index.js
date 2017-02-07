@@ -69,7 +69,7 @@ function gameSearch(receivedRoomId, player1Join, player2Join, socket){
     console.log("gameStart function running...");
     var room = rooms.searchById(roomId).room;
     if (room){
-      console.log(room.id);
+      console.log("Найдена комната: "+room.id);
       //Добавляем игрока в комнату, если его ещё нет
       if (player2Join){
         if (!room.player2.player) {
@@ -94,7 +94,7 @@ function gameSearch(receivedRoomId, player1Join, player2Join, socket){
     else
     {
         socket.emit("game not found");
-        console.log("game not found from server");
+        //console.log("game not found from server");
     }
   }
 
@@ -141,9 +141,9 @@ io.on('connection', function (socket) {
             console.log("Создана комната "+room.id);
 
             //создадим в базе
-            console.log("TRYING TO SAVE GAME IN DATABASE...");
+            //console.log("TRYING TO SAVE GAME IN DATABASE...");
             db.addRoom(room.id, {field: JSON.stringify(room.field), moved: JSON.stringify(room.moved), player1: JSON.stringify(room.player1), player2: JSON.stringify(room.player2), lostFigures: JSON.stringify(room.lostFigures)});
-            console.log("DONE");
+            //console.log("DONE");
 
             if (!room.player1.player) {
               room.addPlayer1(socket);
@@ -164,12 +164,12 @@ io.on('connection', function (socket) {
         if (roomDisconnected) {
           if (roomDisconnected.room.player1.player == socket){
             roomDisconnected.room.player1.player = null;
-            console.log("Отключился игрок 1");
+            console.log("Отключился игрок 1. Комната " + roomDisconnected.room.id);
             if (roomDisconnected.room.player2.player) roomDisconnected.room.player2.player.emit('opponent status', {opponentOffline: true});
           }
           else{
             roomDisconnected.room.player2.player = null;
-            console.log("Отключился игрок 2");
+            console.log("Отключился игрок 2. Комната " + roomDisconnected.room.id);
             if (roomDisconnected.room.player1.player) roomDisconnected.room.player1.player.emit('opponent status', {opponentOffline: true});
           }
           //удаляем комнату, если её разрешено удалять
