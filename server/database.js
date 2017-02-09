@@ -55,7 +55,7 @@ var database = {
           restoredRoom.field = JSON.parse(row.field);
           restoredRoom.moved = JSON.parse(row.moved);
           restoredRoom.lostFigures = JSON.parse(row.lost_figures);
-          restoredRoom.canDelete = null;
+          restoredRoom.initialRoom = false;
           rooms.push(restoredRoom);
           callback(row.room_id);
         }

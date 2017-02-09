@@ -15,7 +15,7 @@ var Room = function(href){
       rook_b_r: false,
       king_b: false
     };
-    this.canDelete = true;
+    this.initialRoom = true;
     this.lostFigures = {
       figures: [],
       lastMarkedWhite: false,
@@ -126,7 +126,7 @@ Room.prototype.game = function(){
   //Отправка игрокам (игроку) информации о состоянии игры
   function sendGameStatus(){
     if (self.player1.player && self.player2.player) {
-      self.canDelete = false;
+      self.initialRoom = false;
     }
     var player2OpponentOffline;
     var player1OpponentOffline;
@@ -419,7 +419,7 @@ Room.prototype.setNewGame = function(number){
       self.player2.nowTurn = false;
   }
   self.field = Room.prototype.makeInitialField();;
-  self.canDelete = true;
+  self.initialRoom = true;
   self.lostFigures = [];
 };
 
