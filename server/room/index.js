@@ -39,6 +39,7 @@ Room.prototype.addPlayer2 = function(socket){
 
 Room.prototype.makeInitialField = function(){
   var result = [];
+  /*
     //середина поля
     for (var i=0; i<8; i++){
       result[i] = [];
@@ -47,6 +48,7 @@ Room.prototype.makeInitialField = function(){
       }
     }
     //расстановка фигур
+
     result[0][0]="rook_w";
     result[1][0]="knight_w";
     result[2][0]="bishop_w";
@@ -80,7 +82,20 @@ Room.prototype.makeInitialField = function(){
     result[5][7]="bishop_b";
     result[6][7]="knight_b";
     result[7][7]="rook_b";
+*/
 
+    //тест мата
+    for (var i=0; i<8; i++){
+      result[i] = [];
+      for (var j=0; j<8; j++){
+        result[i][j]="empty";
+      }
+    }
+    //расстановка фигур
+    result[0][0]="rook_w";
+    result[4][0]="king_w";
+    result[7][0]="rook_w";
+    result[4][7]="king_b";
     return result;
 };
 
