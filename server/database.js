@@ -35,18 +35,18 @@ var database = {
     var result = null;
     pg.connect(this.connectionString, function(err, client, done) {
       if (err) throw err;
-      //console.log('Connected to searching row!!!');
+      console.log('Connected to searching row!!!');
       var query = "SELECT * FROM rooms WHERE room_id = '" + room_id + "';";
       var qr = client.query(query);
       var found = false;
       qr.on('row', function(row) {
         if (!found){
           found = true;
-          //console.log("ROOM FOUNDED IN DB. callback function...");
+          console.log("ROOM FOUNDED IN DB. callback function...");
           result = JSON.stringify(row);
-          //console.log(result);
-          //console.log("callback function...");
-          //console.log("row.room_id: " + row.room_id);
+          console.log(result);
+          console.log("callback function...");
+          console.log("row.room_id: " + row.room_id);
           var restoredRoom = new Room();
           restoredRoom.player1 = JSON.parse(row.player1);// || {player: null};
           restoredRoom.player2 = JSON.parse(row.player2);// || {player: null};
@@ -55,7 +55,7 @@ var database = {
           restoredRoom.field = JSON.parse(row.field);
           restoredRoom.moved = JSON.parse(row.moved);
           restoredRoom.lostFigures = JSON.parse(row.lost_figures);
-          restoredRoom.initialRoom = false;
+          restoredRoom.canDelete = null;
           rooms.push(restoredRoom);
           callback(row.room_id);
         }
@@ -66,8 +66,8 @@ var database = {
         }
       });
     });
-    //console.log("Result of searching function:");
-    //console.log(result);
+    console.log("Result of searching function:");
+    console.log(result);
     //return result;
   }
 }

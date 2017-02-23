@@ -169,7 +169,7 @@ Room.prototype.game = function(){
 
   //обработка информации о ходе игрока
   function turnProcessing(data){
-    var isCheck = function(player){
+  /*  var isCheck = function(player){
       //для игрока 1
       //находим координаты белого короля
       var king_wCoords = {};
@@ -346,7 +346,7 @@ Room.prototype.game = function(){
 
       return false;
 
-    }
+    }*/
     var saveTurn = function(player,field,moved,turnContent,lostFigure){
         if (player == self.player1){
             self.field = field;
@@ -396,9 +396,6 @@ Room.prototype.game = function(){
       console.log("Второй походил!");
       saveTurn(self.player2,data.field,data.moved,data.turnContent,data.lostFigure);
     }
-    if (isCheck()){
-      console.log("ШАХ БЕЛОМУ ЁПТ")
-    };
     sendGameStatus(self.player1.player, self.player2.player);
   };
 
@@ -411,7 +408,19 @@ Room.prototype.game = function(){
           });
       }
     }
-  }
+  };
+
+  function loseListen(){
+    for (var i = 0; i < arguments.length; i++) {
+      if (arguments[i]){
+          arguments[i].once('i loose', function(data){
+            self.endGame(data);
+            console.log("i loose received from player "+data);
+          });
+      }
+    }
+  };
+  loseListen(self.player1.player, self.player2.player);
   turnDoneListen(self.player1.player, self.player2.player);
   sendGameStatus(self.player1.player, self.player2.player);
 
@@ -473,41 +482,28 @@ Room.prototype.restartGameListener = function(){
     });
   }
 };
-Room.prototype.endGame = function(reason){
+Room.prototype.endGame = function(looserNumber){
     console.log("Игра закончилась!");
     var self = this;
     self.player1.nowTurn = false;
     self.player2.nowTurn = false;
-    if (!reason) {
-        switch (self.winner()) {
-            case self.player1:
-                console.log("Первый выиграл!");
-                self.player1.player ? self.player1.player.emit('end game', 'win') : {};
-                self.player2.player ? self.player2.player.emit('end game', 'loose') : {};
-                break;
-            case self.player2:
-                console.log("Второй выиграл!");
-                self.player1.player ? self.player1.player.emit('end game', 'loose') : {};
-                self.player2.player ? self.player2.player.emit('end game', 'win') : {};
-                break;
-            case "pat":
-                console.log("Ничья!");
-                self.player1.player ? self.player1.player.emit('end game', 'pat') : {};
-                self.player2.player ? self.player2.player.emit('end game', 'pat') : {};
-                break;
-            default:
-        }
+    switch (looserNumber) {
+        case 2:
+            console.log("Первый выиграл!");
+            self.player1.player ? self.player1.player.emit('end game', 'win') : {};
+            self.player2.player ? self.player2.player.emit('end game', 'loose') : {};
+            break;
+        case 1:
+            console.log("Второй выиграл!");
+            self.player1.player ? self.player1.player.emit('end game', 'loose') : {};
+            self.player2.player ? self.player2.player.emit('end game', 'win') : {};
+            break;
+        case "pat":
+            console.log("Ничья!");
+            self.player1.player ? self.player1.player.emit('end game', 'pat') : {};
+            self.player2.player ? self.player2.player.emit('end game', 'pat') : {};
+            break;
+        default:
     }
-    else{
-        switch (reason) {
-            case "disconnect":
-                console.log("Причина: игрок отключился");
-                /*self.player1 ? self.player1.player.emit('end game', 'disconnect'):{};
-                self.player2 ? self.player2.player.emit('end game', 'disconnect'):{};
-                break;*/
-            default:
-        }
-    }
-
 };
 module.exports = Room;
