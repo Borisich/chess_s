@@ -173,7 +173,7 @@ io.on('connection', function (socket) {
             if (roomDisconnected.room.player1.player) roomDisconnected.room.player1.player.emit('opponent status', {opponentOffline: true});
           }
           //удаляем комнату, если её разрешено удалять
-          if (roomDisconnected.room.canDelete){
+          if (roomDisconnected.room.initialRoom){
             rooms.splice(roomDisconnected.roomNumber, 1);
             console.log("Игрок отключился, удалена комната " + roomDisconnected.room.id);
             console.log("Количество активных комнат: "+rooms.length);
