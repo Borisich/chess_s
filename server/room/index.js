@@ -96,6 +96,11 @@ Room.prototype.makeInitialField = function(){
     result[4][0]="king_w";
     result[7][0]="rook_w";
     result[4][7]="king_b";
+
+    result[7][7]="rook_b";
+    result[7][6]="rook_b";
+    result[7][5]="rook_b";
+    result[7][4]="rook_b";
     return result;
 };
 
@@ -444,7 +449,11 @@ Room.prototype.setNewGame = function(number){
   }
   self.field = Room.prototype.makeInitialField();;
   self.initialRoom = true;
-  self.lostFigures = [];
+  self.lostFigures = {
+    figures: [],
+    lastMarkedWhite: false,
+    lastMarkedBlack: false
+  };
 };
 
 Room.prototype.restartGameListener = function(){
