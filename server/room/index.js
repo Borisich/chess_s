@@ -454,6 +454,14 @@ Room.prototype.setNewGame = function(number){
     lastMarkedWhite: false,
     lastMarkedBlack: false
   };
+  self.moved = {
+    rook_w_l: false,
+    rook_w_r: false,
+    king_w: false,
+    rook_b_l: false,
+    rook_b_r: false,
+    king_b: false
+  };
 };
 
 Room.prototype.restartGameListener = function(){
