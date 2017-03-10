@@ -70,6 +70,7 @@ function gameSearch(receivedRoomId, player1Join, player2Join, socket){
     var room = rooms.searchById(roomId).room;
     if (room){
       console.log(room.id);
+      console.log("initialRoom: " + room.initialRoom);
       //Добавляем игрока в комнату, если его ещё нет
       if (player2Join){
         if ((!room.player2.player) || (room.player2.player && room.initialRoom)){
