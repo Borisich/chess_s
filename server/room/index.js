@@ -145,9 +145,6 @@ Room.prototype.game = function(){
 
   //Отправка игрокам (игроку) информации о состоянии игры
   function sendGameStatus(){
-    if (self.player1.player && self.player2.player) {
-      self.initialRoom = false;
-    }
     var player2OpponentOffline;
     var player1OpponentOffline;
     self.player1.player ? player2OpponentOffline = false : player2OpponentOffline = true;
@@ -352,6 +349,7 @@ Room.prototype.game = function(){
       return false;
 
     }*/
+
     var saveTurn = function(player,field,moved,turnContent,lostFigure){
         if (player == self.player1){
             self.field = field;
@@ -405,12 +403,19 @@ Room.prototype.game = function(){
   };
 
   function turnDoneListen(){
+    var self = this;
     for (var i = 0; i < arguments.length; i++) {
       if (arguments[i]){
           arguments[i].removeAllListeners('turn done');
           arguments[i].on('turn done', function(data){
             turnProcessing(data);
           });
+          arguments[i].once('turn done', function(){
+            if (self.player1.player && self.player2.player) {
+              self.initialRoom = false;
+            }
+          });
+
       }
     }
   };
