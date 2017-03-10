@@ -78,8 +78,10 @@ function gameSearch(receivedRoomId, player1Join, player2Join, socket){
           room.game();
           room.chat();
         }
-        else socket.emit("room is full");
-        socket.disconnect();
+        else {
+          socket.emit("room is full");
+          socket.disconnect();
+        }
       }
       else if (player1Join){
         if ((!room.player1.player) || (room.player1.player && room.initialRoom)){
@@ -87,8 +89,10 @@ function gameSearch(receivedRoomId, player1Join, player2Join, socket){
           room.game();
           room.chat();
         }
-        else socket.emit("room is full");
-        socket.disconnect();
+        else {
+          socket.emit("room is full");
+          socket.disconnect();
+        }
       }
       else {
         socket.emit("game not found");
