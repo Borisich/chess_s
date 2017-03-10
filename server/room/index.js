@@ -411,9 +411,7 @@ Room.prototype.game = function(){
             turnProcessing(data);
           });
           arguments[i].once('turn done', function(){
-            if (self.player1.player && self.player2.player) {
-              self.initialRoom = false;
-            }
+            self.initialRoom = false;
           });
 
       }

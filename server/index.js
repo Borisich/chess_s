@@ -72,7 +72,7 @@ function gameSearch(receivedRoomId, player1Join, player2Join, socket){
       console.log(room.id);
       //Добавляем игрока в комнату, если его ещё нет
       if (player2Join){
-        if (!room.player2.player) {
+        if ((!room.player2.player) || (room.player2.player && room.initialRoom)){
           room.addPlayer2(socket);
           room.game();
           room.chat();
