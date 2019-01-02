@@ -1,8 +1,24 @@
 version: '3'
 services:
+  watch:
+    container_name: watcher
+    build: ./client/
+    # volumes:
+    #   - ./client/src:/usr/src/app/client/w_src
+    # depends_on:
+    #   - web
+    # volumes_from:
+    #   - docker-chess-node
+    # working_dir: /usr/src/app
+    # command: docker run --rm -v c:/Users:/data alpine ls /data
+  
   app:
     container_name: docker-chess-node
     restart: always
-    build: .
+    build: ./server/
+    volumes:
+      - ./client/public:/usr/src/app/client/public
     ports:
       - '80:80'
+
+  
