@@ -3,8 +3,8 @@ services:
   watch:
     container_name: watcher
     build: ./client/
-    # volumes:
-    #   - ./client/src:/usr/src/app/client/w_src
+    volumes:
+      - ./client:/usr/src/app/local_client
     # depends_on:
     #   - web
     # volumes_from:
@@ -18,6 +18,7 @@ services:
     build: ./server/
     volumes:
       - ./client/public:/usr/src/app/client/public
+      - ./server:/usr/src/app/local_server
     ports:
       - '80:80'
 

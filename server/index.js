@@ -8,7 +8,7 @@ var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
 
 app.set('port', (process.env.PORT || 80));
-app.use(express.static(path.join(__dirname, './client/public')));
+app.use(express.static(path.join(__dirname, '../client/public')));
 app.use(function (req, res, next) {
 
     // Website you wish to allow to connect
@@ -31,7 +31,7 @@ app.use(function (req, res, next) {
 app.get('/', function(request, response) {
   //response.send('Hello man');
   console.log('request!');
-  response.sendFile(path.join(__dirname, './client/public', 'index.html'));
+  response.sendFile(path.join(__dirname, '../client/public', 'index.html'));
   // response.sendFile('../client/public/index.html');
 });
 
@@ -70,7 +70,7 @@ rooms.searchById = function(id){
 //Поиск комнаты и старт игры, если комната найдена
 function gameSearch(receivedRoomId, player1Join, player2Join, socket){
   function gameStart(roomId){
-    console.log("gameStart function running...");
+    console.log("gameStart! function running...");
     var room = rooms.searchById(roomId).room;
     if (room){
       console.log(room.id);
