@@ -12,7 +12,7 @@ app.use(express.static(path.join(__dirname, '../client/public')));
 app.use(function (req, res, next) {
 
     // Website you wish to allow to connect
-    res.setHeader('Access-Control-Allow-Origin', 'http://mirt.spb.ru');
+    res.setHeader('Access-Control-Allow-Origin', 'http://185.228.234.10');
 
     // Request methods you wish to allow
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
