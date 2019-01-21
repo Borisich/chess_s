@@ -77,26 +77,32 @@ function gameSearch(receivedRoomId, player1Join, player2Join, socket){
       console.log("initialRoom: " + room.initialRoom);
       //Добавляем игрока в комнату, если его ещё нет
       if (player2Join){
-        if ((!room.player2.player) || (room.player2.player && room.initialRoom)){
-          room.addPlayer2(socket);
-          room.game();
-          room.chat();
-        }
-        else {
-          socket.emit("room is full");
-          socket.disconnect();
-        }
+        // if ((!room.player2.player) || (room.player2.player && room.initialRoom)){
+        //   room.addPlayer2(socket);
+        //   room.game();
+        //   room.chat();
+        // }
+        // else {
+        //   socket.emit("room is full");
+        //   socket.disconnect();
+        // }
+        room.addPlayer2(socket);
+        room.game();
+        room.chat();
       }
       else if (player1Join){
-        if ((!room.player1.player) || (room.player1.player && room.initialRoom)){
-          room.addPlayer1(socket);
-          room.game();
-          room.chat();
-        }
-        else {
-          socket.emit("room is full");
-          socket.disconnect();
-        }
+        // if ((!room.player1.player) || (room.player1.player && room.initialRoom)){
+        //   room.addPlayer1(socket);
+        //   room.game();
+        //   room.chat();
+        // }
+        // else {
+        //   socket.emit("room is full");
+        //   socket.disconnect();
+        // }
+        room.addPlayer1(socket);
+        room.game();
+        room.chat();
       }
       else {
         socket.emit("game not found");
