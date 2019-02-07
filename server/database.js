@@ -78,6 +78,7 @@ var database = {
         if (!found){
           callback(room_id);
         }
+        done();
       });
     });
     //console.log("Result of searching function:");
