@@ -7,7 +7,11 @@ var database = {
   connectionString: "postgres://ijcxjhryrjtdea:943ca728598acba6554c74e137295f196096780b32f7067ab0a825a8b9ec5e0c@ec2-54-243-184-111.compute-1.amazonaws.com:5432/d3jc5i1p0kjj1v",
   addRoom: function(room_id, roomData){
     pg.connect(this.connectionString, function(err, client) {
-      if (err) throw err;
+      if (err) {
+        console.log('Failed to connect');
+        console.log(err);
+        throw err;
+      }
       console.log('Connected to adding row!!!');
       var query = "INSERT INTO rooms (room_id, field, moved, player1, player2, lost_figures) VALUES ('" + room_id + "', '" + roomData.field + "', '" + roomData.moved + "', '" + roomData.player1 + "', '" + roomData.player2 +"', '" + roomData.lostFigures +"');"
       client.query(query);
