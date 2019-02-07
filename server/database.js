@@ -14,7 +14,12 @@ var database = {
       }
       console.log('Connected to adding row!!!');
       var query = "INSERT INTO rooms (room_id, field, moved, player1, player2, lost_figures) VALUES ('" + room_id + "', '" + roomData.field + "', '" + roomData.moved + "', '" + roomData.player1 + "', '" + roomData.player2 +"', '" + roomData.lostFigures +"');"
-      client.query(query);
+      client.query(query, function(err, res) {
+        if (err) {
+          console.log('Failed to INSERT', err);
+        }
+        done();
+      });
     });
   },
 
@@ -29,7 +34,10 @@ var database = {
       console.log('Connected to updating row!!!');
       var query = "UPDATE rooms SET (field, moved, player1, player2, lost_figures) = ('" + roomData.field + "', '" + roomData.moved + "', '" + roomData.player1 + "', '" + roomData.player2 + "', '" + roomData.lostFigures +"') WHERE room_id = '" + room_id + "';";
       //client.query(query);
-      client.query(query, function(err,res){
+      client.query(query, function(err,res) {
+        if (err) {
+          console.log('Failed to UPDATE', err);
+        }
         done();
         console.log('DONE called');
       });
