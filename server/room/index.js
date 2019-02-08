@@ -2,8 +2,8 @@
 //Хранит 2-х игроков(http-соединения), идентификатор комнаты, пригласительную ссылку, логику игры
 //Реализует процессы игры и чата
 var Room = function(href){
-    this.player1 = {player: null, nowTurn: true, playerNumber: 1, lastOpponentTurn: null};
-    this.player2 = {player: null, nowTurn: false, playerNumber: 2, lastOpponentTurn: null};
+    this.player1 = {player: null, nowTurn: true, playerNumber: 1, lastOpponentTurn: null, opponentName: ''};
+    this.player2 = {player: null, nowTurn: false, playerNumber: 2, lastOpponentTurn: null, opponentName: ''};
     this.id = "?" + Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, Room.prototype.getIdLength());
     this.inviteLink = href + this.id;
     this.field = Room.prototype.makeInitialField();//[0,0,0,0,0,0,0,0,0];
@@ -135,6 +135,42 @@ Room.prototype.chat = function(){
           self.player1.player ? self.player1.player.emit('message',text) : {};
       });
     }
+};
+
+Room.prototype.listenOpponentsNames = function(){
+  var self = this;
+  var db = require('../database.js');
+  if (self.player1.player){
+    self.player1.player.removeAllListeners('opponent name');
+    self.player1.player.emit('opponent name', self.player1.opponentName);
+    console.log('Opponent name emitted to player 1',  self.player1.opponentName);
+    self.player1.player.on('opponent name', function(name) {
+      //save to DB
+      
+      console.log("SAVING P1 opponent name TO DATABASE...");
+
+      db.updateOpponentName(self.id, 1, name);
+      self.player1.opponentName = name;
+      console.log("updateOpponentName DONE");
+
+      self.player1.player.emit('opponent name dilivered to server', name);
+    });
+  }
+  if (self.player2.player){
+    self.player2.player.removeAllListeners('opponent name');
+    self.player2.player.emit('opponent name', self.player2.opponentName)
+    self.player2.player.on('opponent name', function(name){
+      //save to DB
+
+      console.log("SAVING P2 opponent name TO DATABASE...");
+
+      db.updateOpponentName(self.id, 2, name);
+      self.player2.opponentName = name;
+      console.log("updateOpponentName DONE");
+
+      self.player2.player.emit('opponent name dilivered to server', name);
+    });
+  }
 };
 
 
@@ -384,8 +420,8 @@ Room.prototype.game = function(){
         //save to DB
         var db = require('../database.js');
         console.log("SAVING TURN TO DATABASE...");
-        var p1 = {player: null, nowTurn: self.player1.nowTurn, playerNumber: self.player1.playerNumber, lastOpponentTurn: self.player1.lastOpponentTurn};
-        var p2 = {player: null, nowTurn: self.player2.nowTurn, playerNumber: self.player2.playerNumber, lastOpponentTurn: self.player2.lastOpponentTurn};
+        var p1 = {player: null, nowTurn: self.player1.nowTurn, playerNumber: self.player1.playerNumber, lastOpponentTurn: self.player1.lastOpponentTurn, opponentName: self.player1.opponentName};
+        var p2 = {player: null, nowTurn: self.player2.nowTurn, playerNumber: self.player2.playerNumber, lastOpponentTurn: self.player2.lastOpponentTurn, opponentName: self.player2.opponentName};
 
 
         db.updateRoom(self.id, {field: JSON.stringify(self.field), moved: JSON.stringify(self.moved), player1: JSON.stringify(p1), player2: JSON.stringify(p2), lostFigures: JSON.stringify(self.lostFigures)});

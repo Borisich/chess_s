@@ -5,6 +5,8 @@ var soundManager = require('../../../../sounds/sounds.js');
 
 var StatusBar = require('./StatusBar.jsx');
 
+var OpponentName = require('./OpponentName.jsx');
+
 var GameField = React.createClass({
     getInitialState: function(){
         function getInitialFieldState(){
@@ -1221,8 +1223,9 @@ var GameField = React.createClass({
                 <div onClick={this.clickHandler}>
                   {htmlField()}
                 </div>
-                <div>
+                <div id="statusbar">
                   <StatusBar text={this.state.statusText} connectionText={this.state.connectionText} button1={this.state.statusButton1} button2={this.state.statusButton2} buttonsDescriptionText={this.state.buttonsDescriptionText}/>
+                  <OpponentName/>
                 </div>
               </div>
           );

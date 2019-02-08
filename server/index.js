@@ -89,6 +89,7 @@ function gameSearch(receivedRoomId, player1Join, player2Join, socket){
         room.addPlayer2(socket);
         room.game();
         room.chat();
+        room.listenOpponentsNames();
       }
       else if (player1Join){
         // if ((!room.player1.player) || (room.player1.player && room.initialRoom)){
@@ -103,6 +104,7 @@ function gameSearch(receivedRoomId, player1Join, player2Join, socket){
         room.addPlayer1(socket);
         room.game();
         room.chat();
+        room.listenOpponentsNames();
       }
       else {
         socket.emit("game not found");

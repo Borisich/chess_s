@@ -45,6 +45,27 @@ var database = {
     });
   },
 
+  updateOpponentName: function(room_id, player, opponentName){
+    console.log('We want to updateOpponentName...!', room_id, player, opponentName);
+    pg.connect(this.connectionString, function(err, client, done) {
+      console.log('connect function called...');
+      if (err) {
+        console.log('Shit happened!');
+        throw err;
+      }
+      console.log('Connected to updating row!!!');
+      var query = `UPDATE rooms SET player${player} = player${player}::jsonb || '{"opponentName": "${opponentName}"}'::jsonb WHERE room_id = '${room_id}';`;
+      client.query(query, function(err,res) {
+        if (err) {
+          console.log('Failed to UPDATE', err);
+        }
+        done();
+        console.log('DONE called');
+      });
+      console.log('updated.');
+    });
+  },
+
   searchRoom: function(room_id, rooms, callback){
     var result = null;
     pg.connect(this.connectionString, function(err, client, done) {

@@ -14,8 +14,12 @@
     width: 1250px;
     height: 1000px;
     margin: 0 auto;
-    position: relative;;
+    position: relative;
+}
 
+#statusbar {
+    display: flex;
+    justify-content: space-between;
 }
 
 #field {
