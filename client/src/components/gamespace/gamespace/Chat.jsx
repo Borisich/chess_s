@@ -8,8 +8,8 @@ var soundManager = require('../../../../sounds/sounds.js');
 var Chat = React.createClass({
 
     getInitialState: function () {
-        var el = document.createElement('div');
         return {
+            playerNumber: 1,
             shown: false,
             userInput: "",
             messageList: []
@@ -18,10 +18,11 @@ var Chat = React.createClass({
 
     componentDidMount: function () {
         var self = this;
-        socket.on('game status', function () {
+        socket.on('game status', function (gameData) {
             console.log("Игра началась");
             self.setState({
-                shown: true
+                shown: true,
+                playerNumber: gameData.playerNumber,
             });
         });
         socket.on('message',function(text){
@@ -35,6 +36,18 @@ var Chat = React.createClass({
                 messageList: tmp
             });
             soundManager.play('new_message');
+        });
+        
+        socket.on('messages',function(messages){
+            let messageList = messages.map(messageDBdata => {
+                return {
+                    text: messageDBdata.message,
+                    class: messageDBdata.player === self.state.playerNumber ? "yourmessage" : "othermessage",
+                }
+            });
+            self.setState({
+                messageList,
+            });
         });
     },
 

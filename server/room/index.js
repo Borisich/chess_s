@@ -121,17 +121,30 @@ Room.prototype.winner = function(){
 
 Room.prototype.chat = function(){
     var self = this;
+    var db = require('../database.js');
     if (self.player1.player){
       self.player1.player.removeAllListeners('message');
+      // send all messages to player 1
+      db.getRoomMessages(self.id, (messages) => {
+        self.player1.player.emit('messages', messages);
+      });
       self.player1.player.on('message', function(text){
-          self.player1.player.emit('message dilivered to server',text);
+          db.addChatMessage(self.id, 1, text, () => {
+            self.player1.player.emit('message dilivered to server', text);
+          });
           self.player2.player ? self.player2.player.emit('message',text) : {};
       });
     }
     if (self.player2.player){
       self.player2.player.removeAllListeners('message');
+      // send all messages to player 2
+      db.getRoomMessages(self.id, (messages) => {
+        self.player2.player.emit('messages', messages);
+      });
       self.player2.player.on('message', function(text){
-          self.player2.player.emit('message dilivered to server',text);
+          db.addChatMessage(self.id, 2, text, () => {
+            self.player2.player.emit('message dilivered to server', text);
+          });
           self.player1.player ? self.player1.player.emit('message',text) : {};
       });
     }

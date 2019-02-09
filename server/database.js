@@ -105,7 +105,47 @@ var database = {
     //console.log("Result of searching function:");
     //console.log(result);
     //return result;
-  }
+  },
+
+  addChatMessage: function(room_id, playerNumber, message, callback) {
+    pg.connect(this.connectionString, function(err, client, done) {
+      if (err) {
+        console.log('Failed to connect to add message');
+        console.log(err);
+        throw err;
+      }
+      console.log('Connected to adding message!!!');
+      var query = `INSERT INTO chat_messages (room_id, player, message) VALUES ('${room_id}', '${playerNumber}', '${message}');`;
+      console.log(query);
+      client.query(query, function(err, res) {
+        if (err) {
+          console.log('Failed to INSERT message', err);
+        }
+        callback();
+        done();
+      });
+    });
+  },
+
+  getRoomMessages: function(room_id, callback) {
+    pg.connect(this.connectionString, function(err, client, done) {
+      if (err) {
+        console.log('Failed to connect to get messages');
+        console.log(err);
+        throw err;
+      }
+      console.log('Connected to getting message!!!');
+      var query = `SELECT * FROM chat_messages WHERE room_id = '${room_id}' ORDER BY created_at DESC;`
+      client.query(query, (err, res) => {
+        if (err) {
+          console.log(err.stack)
+        } else {
+          callback(res.rows);
+        }
+        done();
+      })
+    });
+  },
 }
 
 module.exports = database;
