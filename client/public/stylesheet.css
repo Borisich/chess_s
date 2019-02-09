@@ -21,6 +21,9 @@
     display: flex;
     justify-content: space-between;
 }
+.opponentNameContainer {
+  display: flex;
+}
 
 #field {
 	height: 900px;

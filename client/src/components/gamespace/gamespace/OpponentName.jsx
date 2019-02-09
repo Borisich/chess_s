@@ -35,6 +35,7 @@ var OpponentName = React.createClass({
             self.setState({
                 changesSaved: true,
             });
+            document.getElementById('opponentname').blur();
         });
         return false;
     },
@@ -49,10 +50,28 @@ var OpponentName = React.createClass({
 
     render: function(){
         return (
-            <div>
+            <div className='opponentNameContainer'>
+                <span
+                    style={{
+                        marginRight: '5px',
+                        color: 'gray',
+                    }}
+                >
+                    Соперник:
+                </span>
                 <form onSubmit={this.submitForm} id="chatform">
-                    <input id="opponentname" autoComplete="off" placeholder="Имя соперника..."
-                           value={this.state.opponentName} onChange={this.handleUserInput}/>
+                    <input
+                        style={{
+                            borderColor: this.state.changesSaved ? 'unset' : 'orange',
+                            outline: 'none',
+                        }}
+                        spellCheck="false"
+                        id="opponentname" 
+                        autoComplete="off" 
+                        placeholder="Имя соперника..."
+                        value={this.state.opponentName} 
+                        onChange={this.handleUserInput}
+                    />
                 </form>
             </div>
         )
