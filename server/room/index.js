@@ -122,28 +122,31 @@ Room.prototype.winner = function(){
 Room.prototype.chat = function(){
     var self = this;
     var db = require('../database.js');
-    if (self.player1.player){
-      self.player1.player.removeAllListeners('message');
+    if (self.player1.player) {
+      const player1Connection = self.player1.player;
+      player1Connection.removeAllListeners('message');
       // send all messages to player 1
       db.getRoomMessages(self.id, (messages) => {
-        self.player1.player.emit('messages', messages);
+        player1Connection.emit('messages', messages);
       });
       self.player1.player.on('message', function(text){
           db.addChatMessage(self.id, 1, text, () => {
-            self.player1.player.emit('message dilivered to server', text);
+            player1Connection.emit('message dilivered to server', text);
           });
           self.player2.player ? self.player2.player.emit('message',text) : {};
       });
     }
+
     if (self.player2.player){
-      self.player2.player.removeAllListeners('message');
+      const player2Connection = self.player2.player;
+      player2Connection.removeAllListeners('message');
       // send all messages to player 2
       db.getRoomMessages(self.id, (messages) => {
-        self.player2.player.emit('messages', messages);
+        player2Connection.emit('messages', messages);
       });
-      self.player2.player.on('message', function(text){
+      player2Connection.on('message', function(text){
           db.addChatMessage(self.id, 2, text, () => {
-            self.player2.player.emit('message dilivered to server', text);
+            player2Connection.emit('message dilivered to server', text);
           });
           self.player1.player ? self.player1.player.emit('message',text) : {};
       });
