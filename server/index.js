@@ -6,6 +6,10 @@ var app = express();
 
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
+io.attach(server, {
+  pingInterval: 15000,
+  pingTimeout: 8000,
+})
 
 app.set('port', (process.env.PORT || 80));
 app.use(express.static(path.join(__dirname, '../client/public')));
@@ -58,6 +62,14 @@ rooms.searchByPlayer = function(player){
     return false;
 };
 
+setInterval(() => {
+  console.log('periodic process for rooms');
+  rooms.forEach(room => {
+    removeRoomFromArrayIfEmpty(room);
+    console.log(room.id);
+  })
+}, 1*60*1000)
+
 rooms.searchById = function(id){
     for (var i = 0; i< rooms.length; i++){
         if (rooms[i].id== id){
@@ -66,6 +78,18 @@ rooms.searchById = function(id){
     }
     return false;
 };
+
+function removeRoomFromArrayIfEmpty(room){
+  if (
+    !room.player1.player && !room.player2.player
+  ) {
+    const index =  rooms.findIndex(r => r.id === room.id);
+    if (index !== -1) {
+      rooms.splice(index, 1);
+      console.log(`room ${room.id} deleted from memory`);
+    }
+  }
+}
 
 //Поиск комнаты и старт игры, если комната найдена
 function gameSearch(receivedRoomId, player1Join, player2Join, socket){
@@ -110,12 +134,11 @@ function gameSearch(receivedRoomId, player1Join, player2Join, socket){
         socket.emit("game not found");
         socket.disconnect();
       }
-    }
-    else
+    } else
     {
-        socket.emit("game not found");
-        socket.disconnect();
-        console.log("game not found from server");
+      socket.emit("game not found");
+      socket.disconnect();
+      console.log("game not found from server");
     }
   }
 
@@ -156,26 +179,37 @@ io.on('connection', function (socket) {
             //Если есть комната с таким id, то начать игру
             gameSearch(data.params, player1Join, player2Join, socket);
         }
-        else{
+        else {
             console.log("Создание комнаты...");
             room = new Room(data.href);
             console.log("Создана комната "+room.id);
 
             //создадим в базе
             console.log("TRYING TO SAVE GAME IN DATABASE...");
-            db.addRoom(room.id, {field: JSON.stringify(room.field), moved: JSON.stringify(room.moved), player1: JSON.stringify(room.player1), player2: JSON.stringify(room.player2), lostFigures: JSON.stringify(room.lostFigures)});
-            console.log("DONE");
+            db.addRoom(
+              room.id, 
+              {
+                field: JSON.stringify(room.field), 
+                moved: JSON.stringify(room.moved), 
+                player1: JSON.stringify(room.player1), 
+                player2: JSON.stringify(room.player2), 
+                lostFigures: JSON.stringify(room.lostFigures)
+              },
+              () => {
+                console.log("DONE");
 
-            if (!room.player1.player) {
-              room.addPlayer1(socket);
-            }
-
-            rooms.push(room);
-            console.log("Количество активных комнат: "+rooms.length);
-            socket.emit('invite link', room.inviteLink);
-            socket.on('link getted', function(){
-               console.log("Клиент получил ссылку для приглашения другого игрока");
-            });
+                if (!room.player1.player) {
+                  room.addPlayer1(socket);
+                }
+    
+                rooms.push(room);
+                console.log("Количество активных комнат: "+rooms.length);
+                socket.emit('invite link', room.inviteLink);
+                socket.on('link getted', function(){
+                   console.log("Клиент получил ссылку для приглашения другого игрока");
+                });
+              }
+            );
         }
     });
 
@@ -183,18 +217,25 @@ io.on('connection', function (socket) {
     socket.on('disconnect', function () {
         var roomDisconnected = rooms.searchByPlayer(socket);
         if (roomDisconnected) {
-          if (roomDisconnected.room.player1.player == socket){
+          if (roomDisconnected.room.player1.player == socket) {
             roomDisconnected.room.player1.player = null;
             console.log("Отключился игрок 1");
-            if (roomDisconnected.room.player2.player) roomDisconnected.room.player2.player.emit('opponent status', {opponentOffline: true});
+            if (roomDisconnected.room.player2.player) {
+              roomDisconnected.room.player2.player.emit('opponent status', {opponentOffline: true});
+            }
           }
-          else{
+          else if (roomDisconnected.room.player2.player == socket) {
             roomDisconnected.room.player2.player = null;
             console.log("Отключился игрок 2");
-            if (roomDisconnected.room.player1.player) roomDisconnected.room.player1.player.emit('opponent status', {opponentOffline: true});
+            if (roomDisconnected.room.player1.player) {
+              roomDisconnected.room.player1.player.emit('opponent status', {opponentOffline: true});
+            }
           }
           //удаляем комнату, если её разрешено удалять
-          if (roomDisconnected.room.initialRoom){
+          if (
+            // roomDisconnected.room.initialRoom
+            !roomDisconnected.room.player1.player && !roomDisconnected.room.player2.player
+          ) {
             rooms.splice(roomDisconnected.roomNumber, 1);
             console.log("Игрок отключился, удалена комната " + roomDisconnected.room.id);
             console.log("Количество активных комнат: "+rooms.length);

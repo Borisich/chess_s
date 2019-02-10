@@ -10,6 +10,15 @@
 #invitelink {
     text-align: center;
 }
+.inviteLinkBlock {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.copyLinkButton {
+  height: 30px;
+  margin-left: 15px;
+}
 #gamespace {
     width: 1250px;
     height: 1000px;

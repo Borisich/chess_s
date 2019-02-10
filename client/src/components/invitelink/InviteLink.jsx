@@ -98,6 +98,17 @@ var InviteLink = React.createClass({
         });
     },
 
+    copyText: function () {
+      var copyText = document.getElementById("inv");
+      const el = document.createElement('textarea');
+      el.value = copyText.innerText;
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+      alert("Ссылка скопирована: " + copyText.innerText);
+    },
+
     render: function(){
         var additionalInfo = "";
         var loadingData = "";
@@ -128,8 +139,15 @@ var InviteLink = React.createClass({
               {loadingData}
               {this.state.comment}
               <br/>
-
-              <h3>{this.state.link ? this.state.link+"2" : ""}</h3>
+              <div className="inviteLinkBlock">
+                <h3 id="inv">{this.state.link ? this.state.link+"2" : ""}</h3>
+                <button
+                  className="copyLinkButton"
+                  onClick={this.copyText}
+                >
+                  Копировать
+                </button>
+              </div>
 
               {additionalInfo}
 

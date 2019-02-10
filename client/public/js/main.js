@@ -1832,6 +1832,17 @@ var InviteLink = React.createClass({
         });
     },
 
+    copyText: function () {
+        var copyText = document.getElementById("inv");
+        const el = document.createElement('textarea');
+        el.value = copyText.innerText;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+        alert("Ссылка скопирована: " + copyText.innerText);
+    },
+
     render: function () {
         var additionalInfo = "";
         var loadingData = "";
@@ -1884,9 +1895,21 @@ var InviteLink = React.createClass({
                 this.state.comment,
                 React.createElement('br', null),
                 React.createElement(
-                    'h3',
-                    null,
-                    this.state.link ? this.state.link + "2" : ""
+                    'div',
+                    { className: 'inviteLinkBlock' },
+                    React.createElement(
+                        'h3',
+                        { id: 'inv' },
+                        this.state.link ? this.state.link + "2" : ""
+                    ),
+                    React.createElement(
+                        'button',
+                        {
+                            className: 'copyLinkButton',
+                            onClick: this.copyText
+                        },
+                        '\u041A\u043E\u043F\u0438\u0440\u043E\u0432\u0430\u0442\u044C'
+                    )
                 ),
                 additionalInfo
             );
