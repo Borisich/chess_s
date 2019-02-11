@@ -1217,10 +1217,10 @@ var GameField = React.createClass({
       };
       if (this.state.shown) {
 
-          return (
+        const deskClasses = `desk ${this.state.myNumber === 2 ? 'rotate' : ''}`;
+        return (
               <div>
-
-                <div onClick={this.clickHandler}>
+                <div onClick={this.clickHandler} className={deskClasses}>
                   {htmlField()}
                 </div>
                 <div id="statusbar">

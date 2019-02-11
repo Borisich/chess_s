@@ -7,7 +7,8 @@ if (locally) {
   var socket = io('http://localhost');
 } else {
   // var socket = io('http://chs-server.herokuapp.com');
-  var socket = io('http://185.228.234.10');
+  //   var socket = io('http://185.228.234.10');
+  var socket = io('http://monkk.ru:3561');
 }
 
 module.exports = socket;
@@ -1430,12 +1431,13 @@ var GameField = React.createClass({
     };
     if (this.state.shown) {
 
+      const deskClasses = `desk ${this.state.myNumber === 2 ? 'rotate' : ''}`;
       return React.createElement(
         'div',
         null,
         React.createElement(
           'div',
-          { onClick: this.clickHandler },
+          { onClick: this.clickHandler, className: deskClasses },
           htmlField()
         ),
         React.createElement(

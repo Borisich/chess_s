@@ -1,14 +1,16 @@
-
+body {
+  margin: 0;
+}
 .yourmessage:before{
-    color: red;
-    content: "Вы: ";
+  color: red;
+  content: "Вы: ";
 }
 .othermessage:before{
-    color: blue;
-    content: "Соперник: ";
+  color: blue;
+  content: "Соперник: ";
 }
 #invitelink {
-    text-align: center;
+  text-align: center;
 }
 .inviteLinkBlock {
   display: flex;
@@ -20,15 +22,24 @@
   margin-left: 15px;
 }
 #gamespace {
-    width: 1250px;
-    height: 1000px;
-    margin: 0 auto;
-    position: relative;
+  width: 1250px;
+  height: 1000px;
+  margin: 10px auto 0;
+  position: relative;
+}
+
+.rotate {
+  transform: rotate(0.5turn);
+  margin-top: -4px;
+  margin-bottom: 8px;
+}
+.rotate > div {
+  transform: rotate(0.5turn);
 }
 
 #statusbar {
-    display: flex;
-    justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
 }
 .opponentNameContainer {
   display: flex;
@@ -42,10 +53,10 @@
 }
 
 #chat {
-    width: 200px;
-    height: 550px;
-    float: right;
-    overflow: auto;
+  width: 200px;
+  height: 550px;
+  float: right;
+  overflow: auto;
 }
 
 .lostfigureframe {
