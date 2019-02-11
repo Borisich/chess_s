@@ -11,7 +11,7 @@ io.attach(server, {
   pingTimeout: 8000,
 })
 
-app.set('port', (process.env.PORT || 80));
+app.set('port', (process.env.PORT || 3561));
 app.use(express.static(path.join(__dirname, '../client/public')));
 app.use(function (req, res, next) {
 
