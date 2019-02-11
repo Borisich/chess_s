@@ -20,6 +20,6 @@ services:
       - ./client/public:/usr/src/app/client/public
       - ./server:/usr/src/app/local_server
     ports:
-      - '80:80'
+      - '3561:3561'
 
   
