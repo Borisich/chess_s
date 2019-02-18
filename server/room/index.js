@@ -84,23 +84,24 @@ Room.prototype.makeInitialField = function(){
     result[7][7]="rook_b";
 
 
-    /*//тест мата
-    for (var i=0; i<8; i++){
-      result[i] = [];
-      for (var j=0; j<8; j++){
-        result[i][j]="empty";
-      }
-    }
-    //расстановка фигур
-    result[0][0]="rook_w";
-    result[4][0]="king_w";
-    result[7][0]="rook_w";
-    result[4][7]="king_b";
+    // //тест мата
+    // for (var i=0; i<8; i++){
+    //   result[i] = [];
+    //   for (var j=0; j<8; j++){
+    //     result[i][j]="empty";
+    //   }
+    // }
+    // //расстановка фигур
+    // result[0][0]="rook_w";
+    // result[4][0]="king_w";
+    // result[7][0]="rook_w";
+    // result[4][7]="king_b";
 
-    result[7][7]="rook_b";
-    result[7][6]="rook_b";
-    result[7][5]="rook_b";
-    result[7][4]="rook_b";*/
+    // result[7][7]="rook_b";
+    // result[7][6]="rook_b";
+    // result[7][5]="rook_b";
+    // result[7][4]="rook_b";
+
     return result;
 };
 
@@ -524,33 +525,37 @@ Room.prototype.restartGameListener = function(){
   if (self.player1.player){
     self.player1.player.removeAllListeners('restart request');
     self.player1.player.on('restart request', function(){
-      self.player2.player.emit('restart request');
+      if (self.player2.player) self.player2.player.emit('restart request');
     });
     self.player1.player.removeAllListeners('restart accepted');
     self.player1.player.on('restart accepted', function(){
-      self.player2.player.emit('restart accepted');
-      self.setNewGame(2);
-      self.game();
+      if (self.player2.player) {
+        self.player2.player.emit('restart accepted');
+        self.setNewGame(2);
+        self.game();
+      }
     });
     self.player1.player.removeAllListeners('restart canceled');
     self.player1.player.on('restart canceled', function(){
-      self.player2.player.emit('restart canceled');
+      if (self.player2.player) self.player2.player.emit('restart canceled');
     });
   }
   if (self.player2.player){
     self.player2.player.removeAllListeners('restart request');
     self.player2.player.on('restart request', function(){
-      self.player1.player.emit('restart request');
+      if (self.player1.player) self.player1.player.emit('restart request');
     });
     self.player2.player.removeAllListeners('restart accepted');
     self.player2.player.on('restart accepted', function(){
-      self.player1.player.emit('restart accepted');
-      self.setNewGame(1);
-      self.game();
+      if (self.player1.player) {
+        self.player1.player.emit('restart accepted');
+        self.setNewGame(1);
+        self.game();
+      }
     });
     self.player2.player.removeAllListeners('restart canceled');
     self.player2.player.on('restart canceled', function(){
-      self.player1.player.emit('restart canceled');
+      if (self.player1.player) self.player1.player.emit('restart canceled');
     });
   }
 };
