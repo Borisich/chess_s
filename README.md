@@ -1,1 +1,7 @@
-This is server for Heroku (https://ttt-server.herokuapp.com/)
+   Как запустить проект у себя на компе:
+   
+   1. Установить Docker, Docker-Compose
+   2. Изменить в `client/public/js/main.js` строчку, чтоб было `const locally = true;`
+   3. Запустить команду `docker-compose up` и заходить на `localhost:3561`
+   
+   Все изменения подхватываются автоматически. Сервер перезапускается сам. Клиент (окно браузера) надо обновлять вручную
