@@ -1,5 +1,3 @@
-const locally = true;
-
 const path = require('path');
 var express = require('express');
 var app = express();
@@ -30,13 +28,6 @@ app.use(function (req, res, next) {
 
     // Pass to next layer of middleware
     next();
-});
-
-app.get('/', function(request, response) {
-  //response.send('Hello man');
-  console.log('request!');
-  response.sendFile(path.join(__dirname, '../client/public', 'index.html'));
-  // response.sendFile('../client/public/index.html');
 });
 
 var db = require('./database.js');
