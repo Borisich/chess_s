@@ -4,7 +4,8 @@
   "description": "chess online game server",
   "main": "server/index.js",
   "scripts": {
-    "start": "nodemon -L local_server/index.js",
+    "start": "sh -c 'npm install && node index.js'",
+    "dev": "sh -c 'npm install && nodemon -L index.js'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

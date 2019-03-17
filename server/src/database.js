@@ -1,22 +1,34 @@
-var pg = require('pg');
+var pg = require("pg");
 pg.defaults.ssl = true;
-var Room = require('./room');
+var Room = require("./room");
 
 var database = {
-  // connectionString: "postgres://zqxkhxtvbcixhh:31d7a5de47ceb68d3f06d8bb54c66f2294a4f6f0bb2b94bc90376967e6efbb7a@ec2-54-235-204-221.compute-1.amazonaws.com:5432/da593sra73eng5",
-  connectionString: "postgres://ijcxjhryrjtdea:943ca728598acba6554c74e137295f196096780b32f7067ab0a825a8b9ec5e0c@ec2-54-243-184-111.compute-1.amazonaws.com:5432/d3jc5i1p0kjj1v",
-  addRoom: function(room_id, roomData, callback){
+  connectionString: process.env.DB_URL,
+  addRoom: function(room_id, roomData, callback) {
     pg.connect(this.connectionString, function(err, client, done) {
       if (err) {
-        console.log('Failed to connect');
+        console.log("Failed to connect");
         console.log(err);
         throw err;
       }
-      console.log('Connected to adding row!!!');
-      var query = "INSERT INTO rooms (room_id, field, moved, player1, player2, lost_figures) VALUES ('" + room_id + "', '" + roomData.field + "', '" + roomData.moved + "', '" + roomData.player1 + "', '" + roomData.player2 +"', '" + roomData.lostFigures +"');"
+      console.log("Connected to adding row!!!");
+      var query =
+        "INSERT INTO rooms (room_id, field, moved, player1, player2, lost_figures) VALUES ('" +
+        room_id +
+        "', '" +
+        roomData.field +
+        "', '" +
+        roomData.moved +
+        "', '" +
+        roomData.player1 +
+        "', '" +
+        roomData.player2 +
+        "', '" +
+        roomData.lostFigures +
+        "');";
       client.query(query, function(err, res) {
         if (err) {
-          console.log('Failed to INSERT', err);
+          console.log("Failed to INSERT", err);
         }
         callback();
         done();
@@ -24,50 +36,68 @@ var database = {
     });
   },
 
-  updateRoom: function(room_id, roomData){
-    console.log('We want to update room...!');
+  updateRoom: function(room_id, roomData) {
+    console.log("We want to update room...!");
     pg.connect(this.connectionString, function(err, client, done) {
-      console.log('connect function called...');
+      console.log("connect function called...");
       if (err) {
-        console.log('Shit happened!');
+        console.log("Shit happened!");
         throw err;
       }
-      console.log('Connected to updating row!!!');
-      var query = "UPDATE rooms SET (field, moved, player1, player2, lost_figures) = ('" + roomData.field + "', '" + roomData.moved + "', '" + roomData.player1 + "', '" + roomData.player2 + "', '" + roomData.lostFigures +"') WHERE room_id = '" + room_id + "';";
+      console.log("Connected to updating row!!!");
+      var query =
+        "UPDATE rooms SET (field, moved, player1, player2, lost_figures) = ('" +
+        roomData.field +
+        "', '" +
+        roomData.moved +
+        "', '" +
+        roomData.player1 +
+        "', '" +
+        roomData.player2 +
+        "', '" +
+        roomData.lostFigures +
+        "') WHERE room_id = '" +
+        room_id +
+        "';";
       //client.query(query);
-      client.query(query, function(err,res) {
+      client.query(query, function(err, res) {
         if (err) {
-          console.log('Failed to UPDATE', err);
+          console.log("Failed to UPDATE", err);
         }
         done();
-        console.log('DONE called');
+        console.log("DONE called");
       });
-      console.log('updated.');
+      console.log("updated.");
     });
   },
 
-  updateOpponentName: function(room_id, player, opponentName){
-    console.log('We want to updateOpponentName...!', room_id, player, opponentName);
+  updateOpponentName: function(room_id, player, opponentName) {
+    console.log(
+      "We want to updateOpponentName...!",
+      room_id,
+      player,
+      opponentName
+    );
     pg.connect(this.connectionString, function(err, client, done) {
-      console.log('connect function called...');
+      console.log("connect function called...");
       if (err) {
-        console.log('Shit happened!');
+        console.log("Shit happened!");
         throw err;
       }
-      console.log('Connected to updating row!!!');
+      console.log("Connected to updating row!!!");
       var query = `UPDATE rooms SET player${player} = player${player}::jsonb || '{"opponentName": "${opponentName}"}'::jsonb WHERE room_id = '${room_id}';`;
-      client.query(query, function(err,res) {
+      client.query(query, function(err, res) {
         if (err) {
-          console.log('Failed to UPDATE', err);
+          console.log("Failed to UPDATE", err);
         }
         done();
-        console.log('DONE called');
+        console.log("DONE called");
       });
-      console.log('updated.');
+      console.log("updated.");
     });
   },
 
-  searchRoom: function(room_id, rooms, callback){
+  searchRoom: function(room_id, rooms, callback) {
     var result = null;
     pg.connect(this.connectionString, function(err, client, done) {
       if (err) throw err;
@@ -75,8 +105,8 @@ var database = {
       var query = "SELECT * FROM rooms WHERE room_id = '" + room_id + "';";
       var qr = client.query(query);
       var found = false;
-      qr.on('row', function(row) {
-        if (!found){
+      qr.on("row", function(row) {
+        if (!found) {
           found = true;
           //console.log("ROOM FOUNDED IN DB. callback function...");
           result = JSON.stringify(row);
@@ -84,8 +114,8 @@ var database = {
           //console.log("callback function...");
           //console.log("row.room_id: " + row.room_id);
           var restoredRoom = new Room();
-          restoredRoom.player1 = JSON.parse(row.player1);// || {player: null};
-          restoredRoom.player2 = JSON.parse(row.player2);// || {player: null};
+          restoredRoom.player1 = JSON.parse(row.player1); // || {player: null};
+          restoredRoom.player2 = JSON.parse(row.player2); // || {player: null};
           restoredRoom.id = row.room_id;
           restoredRoom.inviteLink = null;
           restoredRoom.field = JSON.parse(row.field);
@@ -96,8 +126,8 @@ var database = {
           callback(row.room_id);
         }
       });
-      qr.on('end', function() {
-        if (!found){
+      qr.on("end", function() {
+        if (!found) {
           callback(room_id);
         }
         done();
@@ -111,16 +141,16 @@ var database = {
   addChatMessage: function(room_id, playerNumber, message, callback) {
     pg.connect(this.connectionString, function(err, client, done) {
       if (err) {
-        console.log('Failed to connect to add message');
+        console.log("Failed to connect to add message");
         console.log(err);
         throw err;
       }
-      console.log('Connected to adding message!!!');
+      console.log("Connected to adding message!!!");
       var query = `INSERT INTO chat_messages (room_id, player, message) VALUES ('${room_id}', '${playerNumber}', '${message}');`;
       console.log(query);
       client.query(query, function(err, res) {
         if (err) {
-          console.log('Failed to INSERT message', err);
+          console.log("Failed to INSERT message", err);
         }
         callback();
         done();
@@ -131,22 +161,22 @@ var database = {
   getRoomMessages: function(room_id, callback) {
     pg.connect(this.connectionString, function(err, client, done) {
       if (err) {
-        console.log('Failed to connect to get messages');
+        console.log("Failed to connect to get messages");
         console.log(err);
         throw err;
       }
-      console.log('Connected to getting message!!!');
-      var query = `SELECT * FROM chat_messages WHERE room_id = '${room_id}' ORDER BY created_at DESC;`
+      console.log("Connected to getting message!!!");
+      var query = `SELECT * FROM chat_messages WHERE room_id = '${room_id}' ORDER BY created_at DESC;`;
       client.query(query, (err, res) => {
         if (err) {
-          console.log(err.stack)
+          console.log(err.stack);
         } else {
           callback(res.rows);
         }
         done();
-      })
+      });
     });
-  },
-}
+  }
+};
 
 module.exports = database;

@@ -1,25 +1,36 @@
-version: '3'
+version: "3"
 services:
-  watch:
-    container_name: watcher
-    build: ./client/
-    volumes:
-      - ./client:/usr/src/app/local_client
-    # depends_on:
-    #   - web
-    # volumes_from:
-    #   - docker-chess-node
-    # working_dir: /usr/src/app
-    # command: docker run --rm -v c:/Users:/data alpine ls /data
-  
-  app:
-    container_name: docker-chess-node
+  client:
     restart: always
-    build: ./server/
+    build:
+      context: .
+      dockerfile: ./client/dockerfile
     volumes:
-      - ./client/public:/usr/src/app/client/public
-      - ./server:/usr/src/app/local_server
+      - ./client:/usr/src/app
+    working_dir: /usr/src/app
+    command: npm start
+    environment:
+      HOST_URL: http://localhost:3561
+  server:
+    restart: always
+    build:
+      context: .
+      dockerfile: ./client/dockerfile
+    volumes:
+      - ./server:/usr/src/app
+    working_dir: /usr/src/app
     ports:
-      - '3561:3561'
-
-  
+      - "3561:3561"
+    command: npm start
+    environment:
+      DB_URL: postgres://ijcxjhryrjtdea:943ca728598acba6554c74e137295f196096780b32f7067ab0a825a8b9ec5e0c@ec2-54-243-184-111.compute-1.amazonaws.com:5432/d3jc5i1p0kjj1v
+      WS_PORT: 3561
+  nginx:
+    image: nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./infrastructure/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - client
+      - server

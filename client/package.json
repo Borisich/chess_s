@@ -4,7 +4,8 @@
   "description": "chess online game client",
   "main": "index.js",
   "scripts": {
-    "start": "watchify local_client/src/main.jsx -v -t [ babelify --presets [ react ] ] -o local_client/public/js/main.js --poll=100",
+    "start": "sh -c 'npm install && npx browserify ./src/main.jsx -t [ babelify --presets [ react ] ] -o static/main.js'",
+    "dev": "sh -c 'npm install && watchify ./src/main.jsx -v -t [ babelify --presets [ react ] ] -o static/main.js --poll=100'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Ivan Khromov",

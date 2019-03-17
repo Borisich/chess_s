@@ -1,0 +1,31 @@
+{
+    "name": "chess-bot",
+    "version": "1.0.0",
+    "description": "Server for telegram bot @ChessWithFriendsBot",
+    "main": "src/main.js",
+    "scripts": {
+        "start": "node src/main.js",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ZmoNkk/chess-bot.git"
+    },
+    "author": "kurnev.e@gmail.com",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/ZmoNkk/chess-bot/issues"
+    },
+    "homepage": "https://github.com/ZmoNkk/chess-bot#readme",
+    "dependencies": {
+        "koa": "^2.7.0",
+        "koa-router": "^7.4.0"
+    },
+    "prettier": {
+        "trailingComma": "es5",
+        "tabWidth": 4,
+        "semi": true,
+        "singleQuote": true
+    },
+    "devDependencies": {}
+}
