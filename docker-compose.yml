@@ -8,7 +8,7 @@ services:
     volumes:
       - ./client:/usr/src/app
     working_dir: /usr/src/app
-    command: npm start
+    command: npm run dev
     environment:
       HOST_URL: http://localhost:3561
   server:
@@ -21,7 +21,7 @@ services:
     working_dir: /usr/src/app
     expose:
       - 3561
-    command: npm start
+    command: npm run dev
     environment:
       DB_URL: postgres://ijcxjhryrjtdea:943ca728598acba6554c74e137295f196096780b32f7067ab0a825a8b9ec5e0c@ec2-54-243-184-111.compute-1.amazonaws.com:5432/d3jc5i1p0kjj1v
       WS_PORT: 3561

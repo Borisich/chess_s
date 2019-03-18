@@ -4,3 +4,6 @@ services:
     environment:
       NODE_ENV: production
       HOST_URL: http://monkk.ru/chess
+    command: npm start
+  server:
+    command: npm start
