@@ -3,4 +3,4 @@ services:
   client:
     environment:
       NODE_ENV: production
-      HOST_URL: http://monkk.ru:3561
+      HOST_URL: http://monkk.ru/chess
