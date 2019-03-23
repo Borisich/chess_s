@@ -6,4 +6,11 @@ services:
       HOST_URL: http://monkk.ru/chess/ws
     command: npm start
   server:
+    expose:
+      - 3562
+    environment:
+      WS_PORT: 3562
     command: npm start
+  nginx:
+    ports:
+      - "3562:80"
