@@ -12,5 +12,7 @@ services:
       WS_PORT: 3562
     command: npm start
   nginx:
+    volumes:
+      - ./nginx.staging.conf:/etc/nginx/nginx.conf
     ports:
       - "3562:80"
