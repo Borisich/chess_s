@@ -13,6 +13,7 @@ services:
     command: npm start
   nginx:
     volumes:
+      - ./client/public:/var/www/public
       - ./nginx.staging.conf:/etc/nginx/nginx.conf
     ports:
       - "3562:80"
