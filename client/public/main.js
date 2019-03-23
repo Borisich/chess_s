@@ -36935,25 +36935,25 @@ module.exports = LostFigures;
 },{"../../../services/socket.js":250,"react":219}],245:[function(require,module,exports){
 //Компонент для генерации всех сообщений
 
-var React = require('react');
+var React = require("react");
 
 var Messages = React.createClass({
-    displayName: 'Messages',
+  displayName: "Messages",
 
-    render: function () {
-        var list = this.props.data.map(function (message, i) {
-            return React.createElement(
-                'p',
-                { className: message.class, key: i },
-                message.text
-            );
-        });
-        return React.createElement(
-            'div',
-            null,
-            list
-        );
-    }
+  render: function () {
+    var list = this.props.data.map(function (message, i) {
+      return React.createElement(
+        "p",
+        { className: message.class, key: i },
+        message.text
+      );
+    });
+    return React.createElement(
+      "div",
+      { className: "messages" },
+      list
+    );
+  }
 });
 
 module.exports = Messages;
@@ -37049,7 +37049,7 @@ module.exports = OpponentName;
 
 },{"../../../../public/sounds/sounds.js":240,"../../../services/socket.js":250,"./Messages.jsx":245,"react":219}],247:[function(require,module,exports){
 //Компонент строки состояния
-var React = require('react');
+var React = require("react");
 
 var StatusBar = React.createClass({
   displayName: "StatusBar",
@@ -37065,21 +37065,27 @@ var StatusBar = React.createClass({
     if (this.props.button1.visible) {
       button1 = React.createElement(
         "button",
-        { disabled: this.props.button1.disabled, onClick: this.handleClickButton1 },
+        {
+          disabled: this.props.button1.disabled,
+          onClick: this.handleClickButton1
+        },
         this.props.button1.text
       );
-    };
+    }
     var button2 = null;
     if (this.props.button2.visible) {
       button2 = React.createElement(
         "button",
-        { disabled: this.props.button2.disabled, onClick: this.handleClickButton2 },
+        {
+          disabled: this.props.button2.disabled,
+          onClick: this.handleClickButton2
+        },
         this.props.button2.text
       );
-    };
+    }
     return React.createElement(
       "div",
-      null,
+      { className: "moveStatus" },
       this.props.text,
       " ",
       React.createElement(
@@ -37087,12 +37093,7 @@ var StatusBar = React.createClass({
         { color: "#F5B1B1" },
         this.props.connectionText
       ),
-      " ",
-      React.createElement("br", null),
-      React.createElement("br", null),
       this.props.buttonsDescriptionText,
-      " ",
-      React.createElement("br", null),
       button1,
       " ",
       button2

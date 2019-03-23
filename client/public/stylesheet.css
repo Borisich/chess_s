@@ -141,41 +141,41 @@ body {
     box-shadow: inset 0 0 0 5px #f6fa35;
 }*/
 .pawn_w {
-  background-image: url(img/w/pawn.png);
+  background-image: url(img/pawn-white.svg);
 }
 .bishop_w {
-  background-image: url(img/w/bishop.png);
+  background-image: url(img/bishop-white.svg);
 }
 .knight_w {
-  background-image: url(img/w/knight.png);
+  background-image: url(img/knight-white.svg);
 }
 .queen_w {
-  background-image: url(img/w/queen.png);
+  background-image: url(img/queen-white.svg);
 }
 .king_w {
-  background-image: url(img/w/king.png);
+  background-image: url(img/king-white.svg);
 }
 .rook_w {
-  background-image: url(img/w/rook.png);
+  background-image: url(img/rook-white.svg);
 }
 
 .pawn_b {
-  background-image: url(img/b/pawn.png);
+  background-image: url(img/pawn-black.svg);
 }
 .bishop_b {
-  background-image: url(img/b/bishop.png);
+  background-image: url(img/bishop-black.svg);
 }
 .knight_b {
-  background-image: url(img/b/knight.png);
+  background-image: url(img/knight-black.svg);
 }
 .queen_b {
-  background-image: url(img/b/queen.png);
+  background-image: url(img/queen-black.svg);
 }
 .king_b {
-  background-image: url(img/b/king.png);
+  background-image: url(img/king-black.svg);
 }
 .rook_b {
-  background-image: url(img/b/rook.png);
+  background-image: url(img/rook-black.svg);
 }
 /*.x:after {
     position: absolute;
@@ -208,9 +208,11 @@ body {
 @media screen and (max-width: 600px) {
   body {
     width: 100%;
+    overflow-x: hidden;
   }
   #gamespace {
     width: 100%;
+    height: initial;
   }
   #gamespace > div {
     display: flex;
@@ -226,13 +228,58 @@ body {
   #field {
     order: 1;
   }
+  #field > div {
+    display: flex;
+    flex-direction: column-reverse;
+  }
   #lostfiguresblack {
-    height: calc((100vw / 8) + 8px);
-    overflow-y: scroll;
+    order: 2;
   }
   #lostfigureswhite {
+    order: 3;
+  }
+  #lostfiguresblack,
+  #lostfigureswhite {
+    position: relative;
+    bottom: 0;
+    width: calc(100vw - 8px);
+    margin: 0;
+    overflow-x: scroll;
+  }
+  #chat {
+    order: 4;
+  }
+  #statusbar {
+    display: flex;
+    flex-direction: column-reverse;
+  }
+  .opponentNameContainer {
+    padding: 4px;
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+  }
+  .moveStatus {
+    padding: 4px;
+  }
+  .desk {
+    border: 1px solid black;
+    margin: 4px 0;
+    display: flex;
+    flex-wrap: wrap;
+  }
+  #lostfigureswhite > div,
+  #lostfiguresblack > div {
     height: calc((100vw / 8) + 8px);
-    overflow-y: scroll;
+    display: flex;
+    padding: 4px;
+  }
+  .lostfigureframe {
+    flex-shrink: 0;
+  }
+  .lostfigureframe.undefined {
+    display: none;
   }
 
   .horizontframe,
@@ -243,9 +290,35 @@ body {
 
   .empty,
   .black,
-  .white {
-    height: calc(100vw / 8);
-    width: calc(100vw / 8);
-    background-size: calc(100vw / 8);
+  .white,
+  .lostfigureframe {
+    height: calc((100vw - 2px) / 8);
+    width: calc((100vw - 2px) / 8);
+    background-size: calc((100vw - 2px) / 8);
+    margin: 0;
+  }
+
+  #chat {
+    padding: 4px;
+  }
+
+  #chat .messages {
+    height: 300px;
+    overflow-y: scroll;
+  }
+
+  #chatinput {
+    padding: 4px;
+    width: calc(100vw - 20px);
+  }
+
+  .selected {
+    box-shadow: inset 0 0 0 3px #f6fa35;
+  }
+  .previousTurnMarked {
+    box-shadow: inset 0 0 0 3px #8ccb5e;
+  }
+  .lostFigureMarked {
+    box-shadow: inset 0 0 0 3px #ffe4e1;
   }
 }
