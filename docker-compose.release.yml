@@ -12,6 +12,7 @@ services:
       WS_PORT: 3562
     command: npm start
   nginx:
+    image: nginx
     volumes:
       - ./client/public:/var/www/public
       - ./nginx.staging.conf:/etc/nginx/nginx.conf
