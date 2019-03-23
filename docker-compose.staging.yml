@@ -7,13 +7,13 @@ services:
       dockerfile: ./client/dockerfile
     volumes:
       - ./client:/usr/src/app
-    working_dir: /usr/src/app  
+    working_dir: /usr/src/app
     environment:
       NODE_ENV: production
       HOST_URL: http://monkk.ru/chess/ws
     command: npm start
   server:
-   restart: always
+    restart: always
     build:
       context: .
       dockerfile: ./server/dockerfile
