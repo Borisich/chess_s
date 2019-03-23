@@ -1,40 +1,39 @@
-version: '3'
+version: "3"
 services:
-  watch:
-    container_name: watcher
-    build: ./client/
-    volumes:
-      - ./client:/usr/src/app/local_client
-    # depends_on:
-    #   - web
-    # volumes_from:
-    #   - docker-chess-node
-    # working_dir: /usr/src/app
-    # command: docker run --rm -v c:/Users:/data alpine ls /data
-  
-  
-  web:
-    image: nginx
-    volumes:
-    - ./client/public:/app
-    - ./nginx.conf:/etc/nginx/nginx.conf
-    # - ./config.txt:/etc/nginx/conf.d/default.conf
-    ports:
-    - "3561:80"
-    command: /bin/bash -c "exec nginx -g 'daemon off;'"
-
-  app:
-    container_name: docker-chess-node
+  client:
     restart: always
-    build: ./server/
+    build:
+      context: .
+      dockerfile: ./client/dockerfile
     volumes:
-      - ./client/public:/usr/src/app/client/public
-      - ./server:/usr/src/app/local_server
+      - ./client:/usr/src/app
+    working_dir: /usr/src/app
+    command: npm run dev
+    environment:
+      HOST_URL: http://localhost:3561
+  server:
+    restart: always
+    build:
+      context: .
+      dockerfile: ./server/dockerfile
+    volumes:
+      - ./server:/usr/src/app
+    working_dir: /usr/src/app
     expose:
       - 3561
-
-
-# app  доступен только в докеровской сети (expose, нет ports)
+    command: npm run dev
+    environment:
+      DB_URL: postgres://ijcxjhryrjtdea:943ca728598acba6554c74e137295f196096780b32f7067ab0a825a8b9ec5e0c@ec2-54-243-184-111.compute-1.amazonaws.com:5432/d3jc5i1p0kjj1v
+      WS_PORT: 3561
+  nginx:
+    image: nginx
+    volumes:
+      - ./client/public:/var/www/public
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "3561:80"
+    command: /bin/bash -c "exec nginx -g 'daemon off;'"
+# server доступен только в докеровской сети (expose, нет ports)
 # наружу прокинут только порт nginx (ports)
 # в настройках nginx запросы по сокетам перенапрявляются на app,
-# а на остальные запросы отдается папка client/public 
+# а на остальные запросы отдается папка client/public
