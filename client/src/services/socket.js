@@ -1,6 +1,6 @@
 var io = require("socket.io-client");
 
-const HOST_URL = process.env.HOST_URL || "http://localhost:3561";
+const HOST_URL = process.env.HOST_URL;
 
 var socket = io(HOST_URL);
 

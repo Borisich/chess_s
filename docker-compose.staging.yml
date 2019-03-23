@@ -9,7 +9,7 @@ services:
     working_dir: /usr/src/app
     environment:
       NODE_ENV: production
-      HOST_URL: http://monkk.ru/chess-staging/ws
+      HOST_URL: http://monkk.ru:3563/ws
     command: npm start
   server:
     restart: always
