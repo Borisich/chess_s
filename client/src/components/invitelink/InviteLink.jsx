@@ -120,13 +120,7 @@ var InviteLink = React.createClass({
     var additionalInfo = "";
     var loadingData = "";
     if (this.state.loading) {
-      loadingData = (
-        <div>
-          Подождите, идет соединение с сервером...
-          <br />
-          <img src="img/loading.gif" height="200" width="200" />
-        </div>
-      );
+      loadingData = <div>Подождите, идет соединение с сервером...</div>;
     }
     if (this.state.link) {
       additionalInfo = (
