@@ -1,11 +1,11 @@
 body {
   margin: 0;
 }
-.yourmessage:before{
+.yourmessage:before {
   color: red;
   content: "Вы: ";
 }
-.othermessage:before{
+.othermessage:before {
   color: blue;
   content: "Соперник: ";
 }
@@ -46,10 +46,9 @@ body {
 }
 
 #field {
-	height: 900px;
-	width: 860px;
+  height: 900px;
+  width: 860px;
   float: left;
-
 }
 
 #chat {
@@ -61,46 +60,50 @@ body {
 
 .lostfigureframe {
   height: 50px;
-	width: 50px;
+  width: 50px;
   /*border: 1px solid black;*/
   display: inline-block;
   margin-top: -4px;
   background-size: 50px;
 }
 #lostfiguresblack {
-	width: 160px;
+  width: 160px;
   float: left;
 }
 #lostfigureswhite {
   margin-left: 10px;
-	width: 160px;
+  width: 160px;
   display: inline-block;
-  position:absolute;
+  position: absolute;
   bottom: 150px;
 }
 /**{
   border: 1px solid black;
 }*/
-.empty,.black,.white,.horizontframe,.verticalframe,.cornerframe {
-	position: relative;
+.empty,
+.black,
+.white,
+.horizontframe,
+.verticalframe,
+.cornerframe {
+  position: relative;
   border-radius: 0px;
   margin-top: -4px;
-	display: inline-block;
-	height: 100px;
-	width: 100px;
+  display: inline-block;
+  height: 100px;
+  width: 100px;
   transition: all 0.5s ease;
-  background-repeat:no-repeat;
-  background-size:100px;
-
+  background-repeat: no-repeat;
+  background-size: 100px;
 }
-.framecolormyturn{
-  background-color: #FFE4C4;
+.framecolormyturn {
+  background-color: #ffe4c4;
 }
-.framecolornotmyturn{
-  background-color: #DCDCDA;
+.framecolornotmyturn {
+  background-color: #dcdcda;
 }
-.framecolorcheck{
-  background-color: #FF2400;
+.framecolorcheck {
+  background-color: #ff2400;
 }
 .cornerframe {
   height: 30px;
@@ -119,61 +122,62 @@ body {
   vertical-align: top; /*чтобы не съезжал вниз при наличии текста*/
 }
 .black {
-  	background-color: #A4A4A4;
+  background-color: #a4a4a4;
 }
 .white {
-  	/*background-color: #FA6900;*/
-    background-color: white;
+  /*background-color: #FA6900;*/
+  background-color: white;
 }
 .selected {
-  	box-shadow: inset 0 0 0 5px #f6fa35;
+  box-shadow: inset 0 0 0 5px #f6fa35;
 }
 .previousTurnMarked {
-  	box-shadow: inset 0 0 0 5px #8CCB5E;
+  box-shadow: inset 0 0 0 5px #8ccb5e;
 }
 .lostFigureMarked {
-  	box-shadow: inset 0 0 0 4px #FFE4E1;
+  box-shadow: inset 0 0 0 4px #ffe4e1;
 }
 /*.empty:hover{
     box-shadow: inset 0 0 0 5px #f6fa35;
 }*/
 .pawn_w {
-    background-image: url(img/w/pawn.png);
+  background-image: url(img/pawn-white.svg);
 }
 .bishop_w {
-    background-image: url(img/w/bishop.png);
+  background-image: url(img/bishop-white.svg);
 }
 .knight_w {
-    background-image: url(img/w/knight.png);
+  background-image: url(img/knight-white.svg);
 }
 .queen_w {
-    background-image: url(img/w/queen.png);
+  background-image: url(img/queen-white.svg);
 }
 .king_w {
-    background-image: url(img/w/king.png);
+  background-image: url(img/king-white.svg);
 }
 .rook_w {
-    background-image: url(img/w/rook.png);
+  background-image: url(img/rook-white.svg);
 }
 
 .pawn_b {
-    background-image: url(img/b/pawn.png);
+  background-image: url(img/pawn-black.svg);
 }
 .bishop_b {
-    background-image: url(img/b/bishop.png);
+  background-image: url(img/bishop-black.svg);
 }
 .knight_b {
-    background-image: url(img/b/knight.png);
+  background-image: url(img/knight-black.svg);
 }
 .queen_b {
-    background-image: url(img/b/queen.png);
+  background-image: url(img/queen-black.svg);
 }
 .king_b {
-    background-image: url(img/b/king.png);
+  background-image: url(img/king-black.svg);
 }
 .rook_b {
-    background-image: url(img/b/rook.png);
+  background-image: url(img/rook-black.svg);
 }
+
 /*.x:after {
     position: absolute;
     top: 0;
@@ -199,3 +203,123 @@ body {
     line-height: 100px;
     text-align: center;
 }*/
+
+/** SMARTPHONE **/
+
+@media screen and (max-width: 600px) {
+  body {
+    width: 100%;
+    overflow-x: hidden;
+  }
+  #gamespace {
+    width: 100%;
+    height: initial;
+  }
+  #gamespace > div {
+    display: flex;
+    flex-direction: column;
+  }
+  #field,
+  #lostfiguresblack,
+  #lostfigureswhite,
+  #chat {
+    width: 100%;
+    height: initial;
+  }
+  #field {
+    order: 1;
+  }
+  #field > div {
+    display: flex;
+    flex-direction: column-reverse;
+  }
+  #lostfiguresblack {
+    order: 2;
+  }
+  #lostfigureswhite {
+    order: 3;
+  }
+  #lostfiguresblack,
+  #lostfigureswhite {
+    position: relative;
+    bottom: 0;
+    width: calc(100vw - 8px);
+    margin: 0;
+    overflow-x: scroll;
+  }
+  #chat {
+    order: 4;
+  }
+  #statusbar {
+    display: flex;
+    flex-direction: column-reverse;
+  }
+  .opponentNameContainer {
+    padding: 4px;
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+  }
+  .moveStatus {
+    padding: 4px;
+  }
+  .desk {
+    border: 1px solid black;
+    margin: 4px 0;
+    display: flex;
+    flex-wrap: wrap;
+  }
+  #lostfigureswhite > div,
+  #lostfiguresblack > div {
+    height: calc((100vw / 8) + 8px);
+    display: flex;
+    padding: 4px;
+  }
+  .lostfigureframe {
+    flex-shrink: 0;
+  }
+  .lostfigureframe.undefined {
+    display: none;
+  }
+
+  .horizontframe,
+  .verticalframe,
+  .cornerframe {
+    display: none;
+  }
+
+  .empty,
+  .black,
+  .white,
+  .lostfigureframe {
+    height: calc((100vw - 2px) / 8);
+    width: calc((100vw - 2px) / 8);
+    background-size: calc((100vw - 2px) / 8);
+    margin: 0;
+  }
+
+  #chat {
+    padding: 4px;
+  }
+
+  #chat .messages {
+    height: 300px;
+    overflow-y: scroll;
+  }
+
+  #chatinput {
+    padding: 4px;
+    width: calc(100vw - 20px);
+  }
+
+  .selected {
+    box-shadow: inset 0 0 0 3px #f6fa35;
+  }
+  .previousTurnMarked {
+    box-shadow: inset 0 0 0 3px #8ccb5e;
+  }
+  .lostFigureMarked {
+    box-shadow: inset 0 0 0 3px #ffe4e1;
+  }
+}

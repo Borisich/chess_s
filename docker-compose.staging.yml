@@ -1,16 +1,16 @@
 version: "3"
 services:
   client:
-    restart: always
     build:
       context: .
       dockerfile: ./client/dockerfile
     volumes:
       - ./client:/usr/src/app
     working_dir: /usr/src/app
-    command: npm run dev
     environment:
-      HOST_URL: http://localhost:3561
+      NODE_ENV: production
+      HOST_URL: http://monkk.ru:3563/ws
+    command: npm start
   server:
     restart: always
     build:
@@ -20,20 +20,17 @@ services:
       - ./server:/usr/src/app
     working_dir: /usr/src/app
     expose:
-      - 3561
-    command: npm run dev
+      - 3562
     environment:
+      WS_PORT: 3562
       DB_URL: postgres://ijcxjhryrjtdea:943ca728598acba6554c74e137295f196096780b32f7067ab0a825a8b9ec5e0c@ec2-54-243-184-111.compute-1.amazonaws.com:5432/d3jc5i1p0kjj1v
-      WS_PORT: 3561
+    command: npm start
   nginx:
+    restart: always
     image: nginx
     volumes:
       - ./client/public:/var/www/public
-      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx.staging.conf:/etc/nginx/nginx.conf
     ports:
-      - "3561:80"
+      - "3562:80"
     command: /bin/bash -c "exec nginx -g 'daemon off;'"
-# server доступен только в докеровской сети (expose, нет ports)
-# наружу прокинут только порт nginx (ports)
-# в настройках nginx запросы по сокетам перенапрявляются на app,
-# а на остальные запросы отдается папка client/public
