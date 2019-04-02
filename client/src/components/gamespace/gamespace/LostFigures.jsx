@@ -23,82 +23,29 @@ var LostFigures = React.createClass({
     return false;
   },
   render: function() {
-    /*console.log("PROPS:");
-    console.log(this.props.lostFigures);
-    console.log("STATE:");
-    console.log(this.state.lostFigures);*/
-
     if (this.state.shown) {
       var lostFigures = this.props.lostFigures;
 
-      var lastIndexWhite = 0;
-      var lastIndexBlack = 0;
+      const figuresToDisplay = [];
+
       for (var i = 0; i < lostFigures.length; i++) {
-        if (this.whatSideIsFigure(lostFigures[i]) == "black")
-          lastIndexBlack = i;
-        if (this.whatSideIsFigure(lostFigures[i]) == "white")
-          lastIndexWhite = i;
-      }
-
-      var reorderedFigures = [];
-      if (this.props.side == "black") {
-        var k = 0;
-        for (var i = 0; i < lostFigures.length; i++) {
-          if (this.whatSideIsFigure(lostFigures[i]) == "black") {
-            if (k < 5) {
-              reorderedFigures[3 * k + 2] = lostFigures[i];
-              if (i == lastIndexBlack) lastIndexBlack = 3 * k + 2;
-            }
-            if (k > 4 && k < 10) {
-              reorderedFigures[3 * k - 14] = lostFigures[i];
-              if (i == lastIndexBlack) lastIndexBlack = 3 * k - 14;
-            }
-            if (k > 9) {
-              reorderedFigures[3 * k - 30] = lostFigures[i];
-              if (i == lastIndexBlack) lastIndexBlack = 3 * k - 30;
-            }
-            k++;
-          }
+        if (this.whatSideIsFigure(lostFigures[i]) == this.props.side) {
+          figuresToDisplay.push(lostFigures[i])
         }
       }
 
-      if (this.props.side == "white") {
-        var k = 0;
-        for (var i = 0; i < lostFigures.length; i++) {
-          if (this.whatSideIsFigure(lostFigures[i]) == "white") {
-            if (k < 5) {
-              reorderedFigures[12 - 3 * k] = lostFigures[i];
-              if (i == lastIndexWhite) lastIndexWhite = 12 - 3 * k;
-            }
-            if (k > 4 && k < 10) {
-              reorderedFigures[28 - 3 * k] = lostFigures[i];
-              if (i == lastIndexWhite) lastIndexWhite = 28 - 3 * k;
-            }
-            if (k > 9) {
-              reorderedFigures[44 - 3 * k] = lostFigures[i];
-              if (i == lastIndexWhite) lastIndexWhite = 44 - 3 * k;
-            }
-            k++;
-          }
-        }
-      }
       var divArray = [];
-      var cls = "";
-      var markedClass = "";
-      for (var i = 0; i < 15; i++) {
-        if (
-          this.props.lastMarked &&
-          ((this.props.side == "black" && i == lastIndexBlack) ||
-            (this.props.side == "white" && i == lastIndexWhite))
-        ) {
-          markedClass = "lostFigureMarked ";
-        }
-        cls = "lostfigureframe " + markedClass + reorderedFigures[i];
-        markedClass = "";
-        divArray.push(<div className={cls} key={i} />);
-      }
-      return <div>{divArray}</div>;
-    } else return null;
+
+      figuresToDisplay.forEach((f, i) => {
+        const isLast = i === figuresToDisplay.length-1;
+        const lastMarkedClass = isLast && this.props.lastMarked ? 'lostFigureMarked' : ''
+        divArray.push(<div className={`lostfigureframe ${f} ${lastMarkedClass}`} key={i} />);
+      });
+      
+      return <div>{divArray.reverse()}</div>;
+    } else {
+      return null;
+    }
   }
 });
 

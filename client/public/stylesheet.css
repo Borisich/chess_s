@@ -135,7 +135,7 @@ body {
   box-shadow: inset 0 0 0 5px #8ccb5e;
 }
 .lostFigureMarked {
-  box-shadow: inset 0 0 0 4px #ffe4e1;
+  box-shadow: 0 0 0 4px #ffe4e1;
 }
 /*.empty:hover{
     box-shadow: inset 0 0 0 5px #f6fa35;
@@ -270,18 +270,8 @@ body {
     display: flex;
     flex-wrap: wrap;
   }
-  #lostfigureswhite > div,
-  #lostfiguresblack > div {
-    height: calc((100vw / 8) + 8px);
-    display: flex;
-    padding: 4px;
-  }
-  .lostfigureframe {
-    flex-shrink: 0;
-  }
-  .lostfigureframe.undefined {
-    display: none;
-  }
+ 
+  
 
   .horizontframe,
   .verticalframe,
@@ -291,12 +281,33 @@ body {
 
   .empty,
   .black,
-  .white,
-  .lostfigureframe {
+  .white {
     height: calc((100vw - 2px) / 8);
     width: calc((100vw - 2px) / 8);
     background-size: calc((100vw - 2px) / 8);
     margin: 0;
+  }
+
+  .lostfigureframe {
+    height: 30px;
+    width: 30px;
+    /*border: 1px solid black;*/
+    display: inline-block;
+    margin-top: -4px;
+    background-size: 30px;
+    flex-shrink: 0;
+  }
+  
+  .lostfigureframe.undefined {
+    display: none;
+  }
+
+  #lostfigureswhite > div,
+  #lostfiguresblack > div {
+    height: 35px;
+    display: flex;
+    padding: 4px;
+    align-items: center;
   }
 
   #chat {
@@ -320,6 +331,6 @@ body {
     box-shadow: inset 0 0 0 3px #8ccb5e;
   }
   .lostFigureMarked {
-    box-shadow: inset 0 0 0 3px #ffe4e1;
+    box-shadow: 0 0 0 3px #ffe4e1;
   }
 }

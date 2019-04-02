@@ -29,6 +29,7 @@ var GameSpace = React.createClass({
       if (data.lostFigures.figures) {
         lostFigures = data.lostFigures.figures;
       }
+
       self.setState({
         lostFigures: {
           figures: lostFigures,
