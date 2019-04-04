@@ -65,7 +65,7 @@ function removeRoomFromArrayIfEmpty(room) {
 }
 
 //Поиск комнаты и старт игры, если комната найдена
-function gameSearch(receivedRoomId, player1Join, player2Join, socket) {
+function gameSearch(receivedRoomId, player1Join, player2Join, socket, href) {
   function gameStart(roomId) {
     console.log("gameStart! function running...");
     var room = rooms.searchById(roomId).room;
@@ -114,7 +114,7 @@ function gameSearch(receivedRoomId, player1Join, player2Join, socket) {
 
   var room = rooms.searchById(receivedRoomId).room;
   if (!room) {
-    db.searchRoom(receivedRoomId, rooms, gameStart);
+    db.searchRoom(receivedRoomId, rooms, gameStart, href);
   } else {
     gameStart(receivedRoomId);
   }
@@ -124,6 +124,9 @@ io.on("connection", function(socket) {
   //отправка присоединившемуся клиенту запрос: пришли свои url параметры (url?params)
   socket.emit("require url params");
   socket.on("url params", function(data) {
+    
+    const href = data.href.slice(0, data.href.length - (Room.prototype.getIdLength() + 2))
+    
     //Проверка параметров.
     //Если есть параметры, попытаться найти комнату с таким id
     //Если их нет, то создать комнату, отправить пригласительную ссылку на подключение к игре другого клиента
@@ -149,7 +152,7 @@ io.on("connection", function(socket) {
         }
       }
       //Если есть комната с таким id, то начать игру
-      gameSearch(data.params, player1Join, player2Join, socket);
+      gameSearch(data.params, player1Join, player2Join, socket, href);
     } else {
       console.log("Создание комнаты...");
       room = new Room(data.href);
