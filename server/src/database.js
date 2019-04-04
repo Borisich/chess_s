@@ -97,7 +97,7 @@ var database = {
     });
   },
 
-  searchRoom: function(room_id, rooms, callback) {
+  searchRoom: function(room_id, rooms, callback, href) {
     var result = null;
     pg.connect(this.connectionString, function(err, client, done) {
       if (err) throw err;
@@ -113,7 +113,7 @@ var database = {
           //console.log(result);
           //console.log("callback function...");
           //console.log("row.room_id: " + row.room_id);
-          var restoredRoom = new Room();
+          var restoredRoom = new Room(href);
           restoredRoom.player1 = JSON.parse(row.player1); // || {player: null};
           restoredRoom.player2 = JSON.parse(row.player2); // || {player: null};
           restoredRoom.id = row.room_id;

@@ -1,9 +1,12 @@
+var request = require("request");
+
 //Комната для игры
 //Хранит 2-х игроков(http-соединения), идентификатор комнаты, пригласительную ссылку, логику игры
 //Реализует процессы игры и чата
 var Room = function(href){
     this.player1 = {player: null, nowTurn: true, playerNumber: 1, lastOpponentTurn: null, opponentName: ''};
     this.player2 = {player: null, nowTurn: false, playerNumber: 2, lastOpponentTurn: null, opponentName: ''};
+    this.href = href;
     this.id = "?" + Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, Room.prototype.getIdLength());
     this.inviteLink = href + this.id;
     this.field = Room.prototype.makeInitialField();//[0,0,0,0,0,0,0,0,0];
@@ -404,6 +407,39 @@ Room.prototype.game = function(){
     }*/
 
     var saveTurn = function(player,field,moved,turnContent,lostFigure){
+        // send telegram notification -------------------
+
+        let notificationUrl = `${self.href}${self.id}`;
+        if (player == self.player1){
+          notificationUrl += '2';
+        } else if (player == self.player2){
+          notificationUrl += '1';
+        }
+
+        console.log('NOTIFICATION TO GAME URL:');
+        console.log(notificationUrl);
+
+        var options = { method: 'POST',
+          url: 'http://18.223.100.58:8081/notify',
+          headers: 
+           { 
+             'cache-control': 'no-cache',
+             'Content-Type': 'application/json' },
+          body: { url: notificationUrl },
+          json: true };
+        
+        request(options, function (error, response, body) {
+          if (error) {
+            console.log('ERROR ON NOTIFICATION');
+            console.log(error);
+          };
+          console.log('NOTIFICATION SEVER RESPONSE:');
+          console.log(body);
+        });
+
+        // -------------------------------------------------
+      
+      
         if (player == self.player1){
             self.field = field;
             self.moved = moved;
