@@ -20,7 +20,6 @@ var Chat = React.createClass({
     socket.on("game status", function(gameData) {
       console.log("Игра началась");
       self.setState({
-        shown: true,
         playerNumber: gameData.playerNumber
       });
     });
@@ -79,10 +78,20 @@ var Chat = React.createClass({
     });
   },
 
+  handleButtonClickEvent: function(e) {
+    const setTo = !this.state.shown;
+    this.setState({
+      shown: setTo
+    });
+  },
+
   render: function() {
     if (this.state.shown) {
       return (
         <div>
+          <button id="chat-visibility" onClick={this.handleButtonClickEvent}>
+            Скрыть чат
+          </button>
           <form onSubmit={this.submitForm} id="chatform">
             <input
               id="chatinput"
@@ -96,7 +105,12 @@ var Chat = React.createClass({
           <Messages data={this.state.messageList} />
         </div>
       );
-    } else return <div />;
+    } else
+      return (
+        <button id="chat-visibility" onClick={this.handleButtonClickEvent}>
+          Открыть чат
+        </button>
+      );
   }
 });
 

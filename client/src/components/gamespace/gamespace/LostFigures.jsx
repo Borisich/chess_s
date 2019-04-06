@@ -30,18 +30,21 @@ var LostFigures = React.createClass({
 
       for (var i = 0; i < lostFigures.length; i++) {
         if (this.whatSideIsFigure(lostFigures[i]) == this.props.side) {
-          figuresToDisplay.push(lostFigures[i])
+          figuresToDisplay.push(lostFigures[i]);
         }
       }
 
       var divArray = [];
 
       figuresToDisplay.forEach((f, i) => {
-        const isLast = i === figuresToDisplay.length-1;
-        const lastMarkedClass = isLast && this.props.lastMarked ? 'lostFigureMarked' : ''
-        divArray.push(<div className={`lostfigureframe ${f} ${lastMarkedClass}`} key={i} />);
+        const isLast = i === figuresToDisplay.length - 1;
+        const lastMarkedClass =
+          isLast && this.props.lastMarked ? "lostFigureMarked" : "";
+        divArray.push(
+          <div className={`lostfigureframe ${f} ${lastMarkedClass}`} key={i} />
+        );
       });
-      
+
       return <div>{divArray.reverse()}</div>;
     } else {
       return null;
