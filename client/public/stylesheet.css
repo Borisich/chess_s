@@ -270,8 +270,6 @@ body {
     display: flex;
     flex-wrap: wrap;
   }
- 
-  
 
   .horizontframe,
   .verticalframe,
@@ -293,20 +291,19 @@ body {
     width: 30px;
     /*border: 1px solid black;*/
     display: inline-block;
-    margin-top: -4px;
     background-size: 30px;
     flex-shrink: 0;
+    margin: 8px;
   }
-  
+
   .lostfigureframe.undefined {
     display: none;
   }
 
   #lostfigureswhite > div,
   #lostfiguresblack > div {
-    height: 35px;
     display: flex;
-    padding: 4px;
+
     align-items: center;
   }
 
@@ -321,7 +318,8 @@ body {
 
   #chatinput {
     padding: 4px;
-    width: calc(100vw - 20px);
+    width: calc(100vw - 22px);
+    margin-top: 4px;
   }
 
   .selected {
@@ -332,5 +330,14 @@ body {
   }
   .lostFigureMarked {
     box-shadow: 0 0 0 3px #ffe4e1;
+  }
+
+  #chat-visibility {
+    width: calc(100vw - 10px);
+    padding: 4px;
+  }
+
+  #lost-figures-placeholder {
+    color: rgba(0, 0, 0, 0.6);
   }
 }
